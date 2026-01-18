@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة Bitco93 المتكاملة</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root { --gold: #FFD700; --dark: #0b0b0b; --gray: #1e1e1e; --text: #ffffff; }
+        body { background-color: var(--dark); color: var(--text); font-family: 'Arial', sans-serif; margin: 0; padding-bottom: 80px; text-align: center; user-select: none; }
+        
+        /* الهيدر وربط المحفظة */
+        .header { display: flex; justify-content: space-between; padding: 15px; background: #151515; align-items: center; border-bottom: 1px solid var(--gold); }
+        .wallet-btn { background: var(--gold); color: black; border: none; padding: 8px 12px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 13px; }
+
+        /* الرصيد */
+        .balance-section { margin: 25px 0; }
+        .score { font-size: 55px; font-weight: bold; color: var(--gold); text-shadow: 0 0 15px rgba(255, 215, 0, 0.3); }
+
+        /* منطقة الضغط (همستر) */
+        .coin-section { margin: 20px 0; }
+        .coin { width: 250px; height: auto; cursor: pointer; transition: transform 0.05s; filter: drop-shadow(0 0 20px var(--gold)); border-radius: 50%; }
+        .coin:active { transform: scale(0.92); }
+
+        /* القائمة السفلية (بلوم) */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #111; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; z-index: 100; }
+        .nav-item { color: #666; font-size: 12px; cursor: pointer; flex: 1; }
+        .nav-item.active { color: var(--gold); font-weight: bold; }
+
+        /* الأقسام */
+        .section { display: none; padding: 20px; animation: fadeIn 0.3s; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* بطاقات المهام والإعلانات */
+        .task-card { background: var(--gray); padding: 15px; margin: 12px 0; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .task-info { text-align: right; }
+        .task-btn { background: var(--gold); color: black; border: none; padding: 7px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .ad-btn { background: #333; color: var(--gold); border: 1px solid var(--gold); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span style="font-weight: bold; color: var(--gold);">Bitco93 Mining</span>
+        <button class="wallet-btn" onclick="connectWallet()">ربط المحفظة 💳</button>
+    </div>
+
+    <div id="home" class="section active">
+        <div class="balance-section">
+            <p style="margin: 0; color: #888;">إجمالي الأرباح</p>
+            <div class="score" id="score">0</div>
+        </div>
+        <div class="coin-section">
+            <img src="https://r.jina.ai/i/6f939e6a0d9b4b0e9b9b9b9b9b9b9b9b" class="coin" onclick="tap()" alt="Bitco93 Coin">
+        </div>
+        <p style="font-size: 14px; color: #666;">اللغة: العربية (الافتراضية) / English</p>
+    </div>
+
+    <div id="tasks" class="section">
+        <h2 style="color: var(--gold);">المهام والمكافآت 💰</h2>
+        
+        <div class="task-card">
+            <div class="task-info">
+                <strong>اشترك في القناة الرسمية</strong>
+                <div style="color: var(--gold); font-size: 12px;">+10,000 عملة</div>
+            </div>
+            <button class="task-btn" onclick="doTask('https://t.me/YourChannel', 10000)">اشتراك</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <strong>انضم إلى بوت الشريك</strong>
+                <div style="color: var(--gold); font-size: 12px;">+5,000 عملة</div>
+            </div>
+            <button class="task-btn" onclick="doTask('https://t.me/YourBot', 5000)">انضمام</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <strong>شاهد إعلان فيديو (ربح مزدوج)</strong>
+                <div style="color: var(--gold); font-size: 12px;">+2,000 عملة</div>
+            </div>
+            <button class="task-btn ad-btn" onclick="alert('جاري تحميل الإعلان لزيادة أرباحك...')">مشاهدة</button>
+        </div>
+    </div>
+
+    <div id="games" class="section">
+        <h2 style="color: var(--gold);">الألعاب المصغرة 🎮</h2>
+        <div class="task-card">
+            <div class="task-info">
+                <strong>لعبة الحظ اليومية</strong>
+                <div style="color: #888; font-size: 12px;">اربح حتى 50,000 نقطة</div>
+            </div>
+            <button class="task-btn">العب</button>
+        </div>
+    </div>
+
+    <nav class="nav-bar">
+        <div class="nav-item active" onclick="nav('home')">🏠<br>الرئيسية</div>
+        <div class="nav-item" onclick="nav('tasks')">💰<br>المهام</div>
+        <div class="nav-item" onclick="nav('games')">🎮<br>الألعاب</div>
+    </nav>
+
+    <script>
+        let balance = 0;
+        const scoreEl = document.getElementById('score');
+
+        // نظام الضغط
+        function tap() {
+            balance += 1;
+            scoreEl.innerText = balance.toLocaleString();
+            if(window.Telegram && window.Telegram.WebApp) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+        }
+
+        // نظام التنقل
+        function nav(id) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // تنفيذ المهام
+        function doTask(url, reward) {
+            window.open(url, '_blank');
+            setTimeout(() => {
+                balance += reward;
+                scoreEl.innerText = balance.toLocaleString();
+                alert('مبروك! حصلت على ' + reward + ' عملة.');
+            }, 3000);
+        }
+
+        function connectWallet() {
+            alert('سيتم ربط محفظة TON (Bitco93 Wallet) في التحديث القادم!');
+        }
+
+        // تفعيل واجهة تليجرام
+        if(window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.ready();
+            window.Telegram.WebApp.expand();
+        }
+    </script>
+</body>
+</html>
