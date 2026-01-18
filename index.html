@@ -1,11 +1,81 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>index.html — cleared</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitco93 Mining</title>
+    <style>
+        body { background-color: #000; color: white; text-align: center; font-family: Arial, sans-serif; margin: 0; overflow: hidden; }
+        .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 30px; }
+        .tab-content { display: none; padding: 20px; height: 70vh; overflow-y: auto; }
+        .active-tab { display: block; }
+        .coin-btn { width: 260px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); margin-top: 20px; }
+        .coin-btn:active { transform: scale(0.9); }
+        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-top: 2px solid #333; }
+        .nav-btn { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        .nav-btn.active { color: #ffd700; font-weight: bold; }
+        .task-card { background: #1a1a1a; border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: right; }
+        .btn-action { background: #ffd700; color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    </style>
 </head>
 <body>
-  <!-- تم مسح جميع الأكواد السابقة بناءً على طلب المستخدم في 2026-01-18 -->
+
+    <div id="home" class="tab-content active-tab">
+        <div class="balance" id="score">0</div>
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png" class="coin-btn" onclick="mine()">
+        <p style="color: #888; margin-top: 20px;">انقر للربح!</p>
+    </div>
+
+    <div id="tasks" class="tab-content">
+        <h2 style="color: #ffd700;">المهام والاشتراكات</h2>
+        <div class="task-card">
+            <p>اشترك في قناة البوت الرسمية</p>
+            <button class="btn-action" onclick="window.open('https://t.me/Bitco93_official_bot')">انضم الآن</button>
+        </div>
+        <div class="task-card">
+            <p>تابعنا على تلجرام (قناة الربح)</p>
+            <button class="btn-action" onclick="alert('سيتم إضافة الرابط قريباً')">متابعة</button>
+        </div>
+    </div>
+
+    <div id="wallet" class="tab-content">
+        <h2 style="color: #ffd700;">محفظة TON</h2>
+        <div style="margin-top: 50px;">
+            <p>رصيدك الحالي: <span id="wallet-balance" style="color: #ffd700;">0</span> عملة</p>
+            <button class="btn-action" style="width: 80%; padding: 15px;" onclick="connectTON()">ربط محفظة TON Connect</button>
+            <p style="font-size: 12px; color: #666; margin-top: 15px;">السحب متاح عند الوصول لـ 50,000 نقطة</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
+        <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span>المهام</button>
+        <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span>المحفظة</button>
+    </div>
+
+    <script>
+        let score = parseInt(localStorage.getItem('score')) || 0;
+        document.getElementById('score').innerText = score;
+        document.getElementById('wallet-balance').innerText = score;
+
+        function mine() {
+            score++;
+            document.getElementById('score').innerText = score;
+            document.getElementById('wallet-balance').innerText = score;
+            localStorage.setItem('score', score);
+            if (navigator.vibrate) navigator.vibrate(40);
+        }
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-tab');
+            btn.classList.add('active');
+        }
+
+        function connectTON() {
+            alert("جاري الاتصال بـ TON Connect... سيتم فتح تطبيق Wallet الخاص بك.");
+        }
+    </script>
 </body>
 </html>
