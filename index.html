@@ -1,36 +1,64 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitco93 Mining</title>
     <style>
-        body { background-color: #000; color: white; text-align: center; font-family: Arial, sans-serif; overflow: hidden; margin: 0; }
-        .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 40px; }
-        .coin-container { margin-top: 30px; }
-        .coin { width: 260px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); }
-        .coin:active { transform: scale(0.92); }
-        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-top: 2px solid #333; }
-        .nav-btn { background: none; border: none; color: #888; cursor: pointer; }
+        body { background-color: #000; color: white; text-align: center; font-family: Arial, sans-serif; margin: 0; }
+        .balance { font-size: 50px; color: #ffd700; margin-top: 40px; font-weight: bold; }
+        .coin-btn { width: 250px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 15px #ffd700); margin-top: 30px; }
+        .coin-btn:active { transform: scale(0.9); }
+        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: #111; padding: 15px 0; border-top: 1px solid #333; }
+        .tab-content { display: none; padding: 20px; }
+        .active-tab { display: block; }
+        .task-card { background: #222; padding: 15px; border-radius: 10px; margin: 10px; border: 1px solid #ffd700; }
+        button.nav-btn { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; }
+        .nav-btn.active { color: #ffd700; }
     </style>
 </head>
 <body>
-    <div class="balance" id="score">0</div>
-    <div class="coin-container">
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png" class="coin" onclick="mine()">
+    <div id="home" class="tab-content active-tab">
+        <div class="balance" id="score">0</div>
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png" class="coin-btn" onclick="mine()">
+        <p>انقر على العملة لجمع النقاط!</p>
     </div>
+
+    <div id="tasks" class="tab-content">
+        <h2>المهام اليومية</h2>
+        <div class="task-card">
+            <p>اشترك في قناة Bitco93 الرسمية</p>
+            <a href="https://t.me/Bitco93_official_bot" style="color:#ffd700; text-decoration:none;">اضغط هنا للاشتراك 🔗</a>
+        </div>
+    </div>
+
+    <div id="wallet" class="tab-content">
+        <h2>محفظة TON</h2>
+        <p>سيتم تفعيل سحب الأرباح عند الوصول لـ 10,000 نقطة</p>
+        <button style="background:#ffd700; border:none; padding:10px 20px; border-radius:5px; font-weight:bold;">ربط محفظة TON Connect</button>
+    </div>
+
     <div class="footer">
-        <button class="nav-btn" style="color: #ffd700;">🏠 الرئيسية</button>
-        <button class="nav-btn" onclick="alert('قريباً: مهام القنوات')">💰 المهام</button>
-        <button class="nav-btn" onclick="alert('اربط محفظتك قريباً')">👛 المحفظة</button>
+        <button class="nav-btn active" onclick="showTab('home', this)">🏠 الرئيسية</button>
+        <button class="nav-btn" onclick="showTab('tasks', this)">💰 المهام</button>
+        <button class="nav-btn" onclick="showTab('wallet', this)">👛 المحفظة</button>
     </div>
+
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
         document.getElementById('score').innerText = score;
+
         function mine() {
             score++;
             document.getElementById('score').innerText = score;
             localStorage.setItem('score', score);
+        }
+
+        function showTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active-tab');
+            btn.classList.add('active');
         }
     </script>
 </body>
