@@ -3,16 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Final</title>
+    <title>Bitco93 - Luxury Edition</title>
     <style>
-        body { background: #000; color: white; text-align: center; font-family: 'Segoe UI', sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
-        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 90px; overflow-y: auto; }
+        body { 
+            /* إضافة الصورة كخلفية ثابتة وتغطية الشاشة بالكامل */
+            background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500633.png') no-repeat center center fixed; 
+            background-size: cover;
+            color: white; 
+            text-align: center; 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+        }
+
+        /* طبقة شفافة بسيطة فوق الخلفية لتحسين قراءة النصوص */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.3); z-index: -1;
+        }
+
+        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 90px; overflow-y: auto; z-index: 1; }
         .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; padding: 20px 0; }
         .active-tab { display: flex; }
 
-        /* تنسيق البطارية (عداد الطاقة) */
-        .battery-container { width: 200px; height: 30px; background: #333; border: 2px solid #ffd700; border-radius: 8px; position: relative; margin: 20px auto; overflow: hidden; }
-        .battery-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ffecb3); width: 100%; transition: width 0.3s ease; }
+        /* البطارية (عداد الطاقة) */
+        .battery-container { width: 200px; height: 30px; background: rgba(51, 51, 51, 0.8); border: 2px solid #ffd700; border-radius: 12px; position: relative; margin: 20px auto; overflow: hidden; }
+        .battery-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #fff); width: 100%; transition: width 0.3s ease; }
         .battery-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 30px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; }
 
         /* العجلة: ألوان خفيفة وأرقام سوداء */
@@ -25,37 +44,39 @@
         .num { position: absolute; width: 100%; height: 100%; transform: rotate(calc(45deg * var(--i))); text-align: center; font-weight: 900; font-size: 22px; color: #000; padding-top: 15px; box-sizing: border-box; }
         .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ffd700; z-index: 10; }
 
-        /* القائمة السفلية (7 خانات) */
-        .footer { width: 100%; display: flex; justify-content: space-around; background: #111; padding: 10px 0; border-top: 2px solid #ffd700; position: fixed; bottom: 0; }
-        .nav-btn { background: none; border: none; color: #777; font-size: 8px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
+        /* القائمة السفلية (7 خانات كاملة) */
+        .footer { width: 100%; display: flex; justify-content: space-around; background: rgba(17, 17, 17, 0.9); padding: 10px 0; border-top: 2px solid #ffd700; position: fixed; bottom: 0; z-index: 1000; }
+        .nav-btn { background: none; border: none; color: #aaa; font-size: 8px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
         .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .nav-btn span { font-size: 20px; margin-bottom: 2px; }
+        .nav-btn span { font-size: 18px; margin-bottom: 2px; }
 
-        /* الأزرار والمهام */
-        .card { background: #1a1a1a; border-radius: 12px; width: 90%; padding: 15px; border: 1px solid #333; margin-top: 10px; }
+        /* البطاقات والمهام */
+        .card { background: rgba(26, 26, 26, 0.85); border-radius: 15px; width: 90%; padding: 15px; border: 1px solid #ffd700; margin-top: 10px; backdrop-filter: blur(5px); }
         .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .mine-btn { width: 200px; cursor: pointer; transition: 0.1s; }
-        .mine-btn:active { transform: scale(0.95); }
+        .mine-btn { width: 220px; cursor: pointer; transition: 0.1s; filter: drop-shadow(0px 0px 10px rgba(255, 215, 0, 0.5)); }
+        .mine-btn:active { transform: scale(0.92); }
     </style>
 </head>
 <body>
 
+<div class="overlay"></div>
+
 <div class="content-area">
     <div id="home" class="tab-content active-tab">
         <div id="mining-section" style="display: none;">
-            <h1 id="score" style="font-size: 55px; color: #ffd700; margin: 10px 0;">0</h1>
+            <h1 id="score" style="font-size: 60px; color: #ffd700; text-shadow: 2px 2px 10px rgba(0,0,0,0.5);">0</h1>
             <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="mine-btn" onclick="mine()">
-            
             <div class="battery-container">
                 <div class="battery-fill" id="energy-bar"></div>
                 <div class="battery-text"><span id="energy-val">130</span> / 130 ⚡</div>
             </div>
         </div>
-
         <div id="lock-screen">
-            <h2 style="color: #ffd700;">⚠️ قفل التعدين</h2>
-            <p>يجب الاشتراك في القناة الرسمية أولاً لفتح البوت.</p>
-            <button class="btn-action" onclick="showTab('tasks', document.querySelectorAll('.nav-btn')[4])">انتقل للمهام</button>
+            <div class="card">
+                <h2 style="color: #ffd700;">⚠️ قفل التعدين</h2>
+                <p>يجب الاشتراك في القناة الرسمية أولاً لفتح نظام جمع العملات.</p>
+                <button class="btn-action" onclick="showTab('tasks', document.querySelectorAll('.nav-btn')[4])">انتقل للمهام الآن</button>
+            </div>
         </div>
     </div>
 
@@ -71,18 +92,18 @@
                 <div class="num" style="--i:6;">75</div><div class="num" style="--i:7;">80</div>
             </div>
         </div>
-        <button onclick="startSpin()" id="spin-btn" class="btn-action" disabled>تدوير!</button>
+        <button onclick="startSpin()" id="spin-btn" class="btn-action" disabled>تدوير العجلة!</button>
     </div>
 
     <div id="games" class="tab-content">
-        <h2>🎮 ألعاب</h2>
-        <div class="card"><p>ألعاب جديدة قادمة قريباً!</p></div>
+        <h2>🎮 الألعاب</h2>
+        <div class="card"><p>ألعاب توقع السعر والربح قريباً!</p></div>
     </div>
 
     <div id="friends" class="tab-content">
         <div class="card">
             <h2>👥 الأصدقاء</h2>
-            <h3 style="color:#ffd700;">الإحالات: <span id="ref-count">0</span></h3>
+            <h3 style="color:#ffd700;">عدد الإحالات: <span id="ref-count">0</span></h3>
             <button onclick="copyInvite()" class="btn-action">نسخ رابط الدعوة</button>
         </div>
     </div>
@@ -91,21 +112,22 @@
         <h2>💰 المهام</h2>
         <div class="card">
             <p><strong>📢 القناة الرسمية:</strong></p>
-            <p style="font-size: 12px;">انضم للقناة لفتح التعدين ومتابعة التحديثات.</p>
-            <a href="https://t.me/Bitco93_Bot_Channel" target="_blank" style="color:#ffd700;">رابط القناة 🚀</a>
-            <button onclick="verifySub()" class="btn-action">تحقق من الاشتراك</button>
+            <p style="font-size: 12px; color: #eee;">تابعنا للحصول على التحديثات وسحب الأرباح.</p>
+            <a href="https://t.me/Bitco93_Bot_Channel" target="_blank" style="color:#ffd700; font-weight: bold;">انضم هنا 🚀</a>
+            <button onclick="verifySub()" class="btn-action">تحقق من الاشتراك لفتح التعدين</button>
         </div>
     </div>
 
     <div id="wallet" class="tab-content">
         <h2>👛 المحفظة</h2>
-        <div class="card"><p>الرصيد: <span id="wallet-balance">0</span></p></div>
+        <div class="card"><p>رصيدك القابل للسحب: <span id="wallet-balance">0</span></p></div>
     </div>
 
     <div id="settings" class="tab-content">
         <div class="card">
             <h2>⚙️ الإعدادات</h2>
-            <select><option>العربية</option><option>English</option></select>
+            <label>🌐 اللغة:</label>
+            <select style="width: 100%; padding: 10px; border-radius: 5px;"><option>العربية</option><option>English</option></select>
         </div>
     </div>
 </div>
@@ -133,7 +155,6 @@
         document.getElementById('wallet-balance').innerText = score;
         document.getElementById('ref-count').innerText = refs;
         document.getElementById('energy-val').innerText = energy;
-        // تحديث شكل البطارية
         document.getElementById('energy-bar').style.width = (energy / 130 * 100) + "%";
         
         let av = refs - usedSpins;
@@ -156,14 +177,14 @@
     function verifySub() {
         isSubscribed = true;
         localStorage.setItem('isSubscribed', 'true');
-        alert("تم التحقق! افتح التعدين الآن.");
+        alert("تم التحقق! يمكنك البدء في جمع العملات الآن.");
         updateUI();
         showTab('home', document.querySelectorAll('.nav-btn')[0]);
     }
 
     function copyInvite() {
         navigator.clipboard.writeText("https://t.me/Bitco93_bot?start=" + Math.random());
-        alert("تم نسخ الرابط!");
+        alert("تم نسخ رابط الدعوة!");
     }
 
     function startSpin() {
@@ -175,7 +196,7 @@
         setTimeout(() => {
             const idx = Math.floor(((360 - (deg % 360)) % 360) / 45);
             score += rewards[idx]; updateUI();
-            alert("ربحت " + rewards[idx]);
+            alert("مبروك! فزت بـ " + rewards[idx]);
         }, 4000);
     }
 
@@ -186,11 +207,7 @@
         btn.classList.add('active');
     }
 
-    // تعبئة الطاقة تلقائياً كل 3 ثواني
-    setInterval(() => {
-        if (energy < 130) { energy++; updateUI(); }
-    }, 3000);
-
+    setInterval(() => { if (energy < 130) { energy++; updateUI(); } }, 3000);
     updateUI();
 </script>
 </body>
