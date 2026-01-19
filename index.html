@@ -12,132 +12,131 @@
             text-align: center; 
             font-family: Arial, sans-serif; 
             margin: 0; 
-            padding-bottom: 80px;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
-            z-index: -1;
-        }
-
-        #loading-screen {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #001a33;
+        /* حاوية العناصر في منتصف الشاشة */
+        .main-container {
+            flex: 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 1000;
         }
 
-        .loader {
-            border: 5px solid #333;
-            border-top: 5px solid #ffd700;
-            border-radius: 50%;
-            width: 50px; height: 50px;
-            animation: spin 1s linear infinite;
+        .balance { 
+            font-size: 60px; 
+            color: #ffd700; 
+            font-weight: bold; 
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+            margin-bottom: 10px;
         }
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 30px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
-        .tab-content { display: none; padding: 20px; min-height: 70vh; }
-        .active-tab { display: block; }
-        
         .coin-btn { 
-            width: 220px; 
+            width: 240px; 
             cursor: pointer; 
             transition: transform 0.1s; 
             filter: drop-shadow(0 0 15px #ffd700); 
-            margin: 20px auto;
-            display: block;
+            user-select: none;
         }
-        .coin-btn:active { transform: scale(0.95); }
+        .coin-btn:active { transform: scale(0.92); }
 
-        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(0, 26, 51, 0.95); padding: 15px 0; border-top: 2px solid #ffd700; z-index: 100; }
-        .nav-btn { background: none; border: none; color: #ccc; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        /* نظام الطاقة */
+        .energy-container {
+            margin-top: 20px;
+            width: 200px;
+        }
+        .energy-text {
+            font-size: 18px;
+            color: #ffd700;
+            margin-bottom: 5px;
+        }
+        .energy-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .energy-bar-fill {
+            height: 100%;
+            background: #ffd700;
+            width: 100%; /* تتغير برمجياً */
+            transition: width 0.3s;
+        }
+
+        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(0, 26, 51, 0.95); padding: 15px 0; border-top: 2px solid #ffd700; }
+        .nav-btn { background: none; border: none; color: #ccc; font-size: 14px; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: #ffd700; font-weight: bold; }
-
-        .card { background: rgba(0, 0, 0, 0.6); border: 1px solid #ffd700; padding: 20px; border-radius: 15px; margin-bottom: 15px; text-align: center; }
-        .btn-action { background: #ffd700; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <div id="loading-screen">
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" width="120" style="margin-bottom: 20px;">
-        <div class="loader"></div>
-        <p style="color: #ffd700; margin-top: 15px;">جاري تحميل Bitco93...</p>
-    </div>
-
-    <div class="overlay"></div>
-
-    <div id="home" class="tab-content active-tab">
+    <div class="main-container">
         <div class="balance" id="score">0</div>
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()">
-        <p style="color: #ffd700; font-weight: bold; font-size: 1.2em;">اضغط للربح!</p>
-    </div>
+        
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" 
+             class="coin-btn" onclick="mine()" id="coin">
 
-    <div id="friends" class="tab-content">
-        <h2 style="color: #ffd700;">دعوة الأصدقاء</h2>
-        <div class="card">
-            <p>اربح 500 نقطة عن كل صديق يدخل عبر رابطك!</p>
-            <h3 id="referral-count">إجمالي الإحالات: 0</h3>
-            <button class="btn-action" onclick="copyReferralLink()">نسخ رابط الإحالة</button>
-        </div>
-    </div>
-
-    <div id="tasks" class="tab-content">
-        <h2 style="color: #ffd700;">المهام</h2>
-        <div class="card">
-            <p>اشترك في قناة البوت الرسمية</p>
-            <button class="btn-action" onclick="window.open('https://t.me/Bitco93_official_bot')">انضم الآن</button>
+        <div class="energy-container">
+            <div class="energy-text">⚡ <span id="energy-val">130</span> / 130</div>
+            <div class="energy-bar-bg">
+                <div class="energy-bar-fill" id="energy-bar"></div>
+            </div>
         </div>
     </div>
 
     <div class="footer">
-        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span> الرئيسية</button>
-        <button class="nav-btn" onclick="showTab('friends', this)"><span>👥</span> الأصدقاء</button>
-        <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span> المهام</button>
+        <button class="nav-btn active"><span>🏠</span> الرئيسية</button>
+        <button class="nav-btn"><span>💰</span> المهام</button>
+        <button class="nav-btn"><span>👛</span> المحفظة</button>
     </div>
 
     <script>
-        window.onload = function() {
-            setTimeout(() => { document.getElementById('loading-screen').style.display = 'none'; }, 1500);
-        };
-
         let score = parseInt(localStorage.getItem('score')) || 0;
-        let referrals = parseInt(localStorage.getItem('referrals')) || 0;
-        
+        let energy = parseInt(localStorage.getItem('energy')) || 130;
+        const maxEnergy = 130;
+
         document.getElementById('score').innerText = score;
-        document.getElementById('referral-count').innerText = "إجمالي الإحالات: " + referrals;
+        updateEnergyUI();
 
         function mine() {
-            score++;
-            document.getElementById('score').innerText = score;
+            if (energy > 0) {
+                score++;
+                energy--;
+                document.getElementById('score').innerText = score;
+                updateEnergyUI();
+                saveData();
+                
+                // اهتزاز بسيط عند الضغط
+                if (navigator.vibrate) navigator.vibrate(40);
+            } else {
+                alert("انتهت الطاقة! انتظر حتى تمتلئ.");
+            }
+        }
+
+        function updateEnergyUI() {
+            document.getElementById('energy-val').innerText = energy;
+            let percentage = (energy / maxEnergy) * 100;
+            document.getElementById('energy-bar').style.width = percentage + "%";
+        }
+
+        function saveData() {
             localStorage.setItem('score', score);
-            if (navigator.vibrate) navigator.vibrate(40);
+            localStorage.setItem('energy', energy);
         }
 
-        function showTab(tabId, btn) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active-tab');
-            btn.classList.add('active');
-        }
-
-        function copyReferralLink() {
-            // رابط وهمي كمثال - في البوت الحقيقي سيتم سحب ID المستخدم من تلجرام
-            const userId = "user123"; 
-            const refLink = "https://t.me/Bitco93_bot?start=" + userId;
-            
-            navigator.clipboard.writeText(refLink).then(() => {
-                alert("تم نسخ رابط الإحالة: " + refLink + "\nستحصل على 500 نقطة لكل إحالة!");
-            });
-        }
+        // زيادة الطاقة تلقائياً (نقطة واحدة كل 3 ثوانٍ)
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateEnergyUI();
+                localStorage.setItem('energy', energy);
+            }
+        }, 3000); 
     </script>
 </body>
 </html>
