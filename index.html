@@ -1,77 +1,64 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitco93 Bot</title>
+    <style>
+        body {
+            /* تعيين الخلفية الزرقاء التي أرسلتها */
+            background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+        }
 
-from fastapi import FastAPI, APIRouter, HTTPException
-from dotenv import load_dotenv
-from starlette.middleware.cors import CORSMiddleware
-from motor.motor_asyncio import AsyncIOMotorClient
-import os
-from pathlib import Path
-from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
-from datetime import datetime, timezone
+        .coin-container {
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
 
-# إعداد المسارات
-ROOT_DIR = Path(__file__).parent
-load_dotenv(ROOT_DIR / '.env')
+        .coin-container:active {
+            transform: scale(0.95);
+        }
 
-app = FastAPI(title="Bitco93 Backend")
+        #coin {
+            width: 250px; /* حجم الشعار الذهبي */
+            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+        }
 
-# تفعيل CORS لربط الواجهة بالسيرفر
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+        .score-display {
+            font-size: 40px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
 
-# الربط بقاعدة البيانات
-MONGO_URL = os.getenv('MONGO_URL')
-client = AsyncIOMotorClient(MONGO_URL)
-db = client[os.getenv('DB_NAME', 'bitco93_db')]
+    <div class="score-display" id="score">0</div>
 
-api_router = APIRouter(prefix="/api")
+    <div class="coin-container" onclick="mine()">
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" id="coin" alt="Bitco93">
+    </div>
 
-# روابط الصور الجديدة التي أرسلتها
-BG_IMAGE = "https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png"
-COIN_IMAGE = "https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png"
+    <script>
+        let score = 0;
+        function mine() {
+            score++;
+            document.getElementById('score').innerText = score;
+            // هنا يمكنك إضافة كود إرسال النقاط للسيرفر لاحقاً
+        }
+    </script>
 
-class User(BaseModel):
-    model_config = ConfigDict(extra="ignore")
-    telegram_id: str
-    username: Optional[str] = None
-    score: int = 0
-    referral_code: str
-    referred_by: Optional[str] = None
-    completed_tasks: List[str] = []
-    last_ad_view: Optional[datetime] = None
-
-# --- المسارات الجديدة للتنسيق مع البوت ---
-
-@api_router.post("/login")
-async def login(user_data: User):
-    user = await db.users.find_one({"telegram_id": user_data.telegram_id})
-    if not user:
-        user_dict = user_data.dict()
-        await db.users.insert_one(user_dict)
-        return {"status": "success", "user": user_dict, "assets": {"bg": BG_IMAGE, "coin": COIN_IMAGE}}
-    return {"status": "success", "user": user, "assets": {"bg": BG_IMAGE, "coin": COIN_IMAGE}}
-
-# نظام التحقق من المهام (Task Verification)
-@api_router.post("/tasks/verify")
-async def verify_task(telegram_id: str, task_id: str):
-    # كود التحقق من إتمام المهمة (مثل الاشتراك في القناة)
-    result = await db.users.update_one(
-        {"telegram_id": telegram_id},
-        {"$addToSet": {"completed_tasks": task_id}, "$inc": {"score": 1000}}
-    )
-    return {"status": "verified", "bonus": 1000}
-
-# نظام الإعلانات (AdGram Integration)
-@api_router.get("/ads/config")
-async def get_ad_config():
-    return {
-        "adgram_token": "YOUR_ADGRAM_TOKEN", # هنا تضع توكن الإعلانات الخاص بك
-        "reward_per_ad": 500
-    }
-
-app.include_router(api_router)
+</body>
+</html>
