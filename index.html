@@ -62,13 +62,21 @@
         <div class="card"><p>سيتم إضافة ألعاب جديدة هنا قريباً!</p></div>
     </div>
 
-    <div id="friends" class="tab-content">
-        <h2 style="color:#ffd700;">👥 الأصدقاء</h2>
-        <div class="card">
-            <p>عدد الإحالات: <span id="ref-count">0</span></p>
-            <button onclick="addFakeRef()" class="btn-action">دعوة صديق</button>
-        </div>
+<div id="friends" class="tab-content">
+    <h2 style="color:#ffd700;">👥 الأصدقاء</h2>
+    <div class="card" style="background: rgba(0, 0, 0, 0.7); border: 1px solid #ffd700; padding: 15px; border-radius: 15px; width: 85%;">
+        <h3 style="color:#ffd700; margin-bottom: 5px;">عدد الإحالات: <span id="ref-count">0</span></h3>
+        
+        <p style="font-size: 14px; color: #ffffff; margin-bottom: 15px; font-weight: bold;">
+            احاله واحده = 1 تدوير عجلة
+        </p>
+
+        <button onclick="addFakeRef()" style="background:#ffd700; color:black; border:none; padding:12px; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;">
+            نسخ رابط الدعوة
+        </button>
     </div>
+</div>
+
 
     <div id="tasks" class="tab-content">
         <h2 style="color:#ffd700;">💰 المهام</h2>
@@ -143,3 +151,32 @@
 </script>
 </body>
 </html>
+// تعريف المتغيرات من الذاكرة المحلية
+let refs = parseInt(localStorage.getItem('refs')) || 0;
+let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
+
+// وظيفة لتحديث الشاشة وحساب عدد الإحالات
+function updateFriendsUI() {
+    // تحديث رقم الإحالات في واجهة الأصدقاء
+    const refElement = document.getElementById('ref-count');
+    if (refElement) refElement.innerText = refs;
+
+    // ربط الإحالات بالعجلة (كل إحالة = محاولة)
+    let availableSpins = refs - usedSpins;
+    const spinsLeftElement = document.getElementById('spins-left');
+    const spinBtn = document.getElementById('spin-btn');
+
+    if (spinsLeftElement) spinsLeftElement.innerText = availableSpins;
+    if (spinBtn) spinBtn.disabled = (availableSpins <= 0);
+}
+
+// الوظيفة التي تعمل عند الضغط على "نسخ الرابط"
+function addFakeRef() {
+    refs++; // زيادة الإحالات بواحد
+    localStorage.setItem('refs', refs); // حفظ في المتصفح
+    updateFriendsUI(); // تحديث الأرقام فوراً
+    alert("تم نسخ رابط الدعوة! (تم احتساب إحالة جديدة)");
+}
+
+// استدعاء التحديث فور تحميل الصفحة
+updateFriendsUI();
