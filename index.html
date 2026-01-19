@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Mining & Games</title>
+    <title>Bitco93 Mining & Spin Wheel</title>
     <style>
         body { 
             background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png') no-repeat center center fixed; 
@@ -18,60 +18,28 @@
             flex-direction: column;
         }
 
-        .content-area {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
-
-        .tab-content { 
-            display: none; 
-            width: 100%; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-        
+        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; }
+        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
         .active-tab { display: flex; }
 
-        .balance { 
-            font-size: 60px; 
-            color: #ffd700; 
-            font-weight: bold; 
-            text-shadow: 0 0 25px rgba(255, 215, 0, 0.7);
-            margin-bottom: 5px;
-        }
-
-        .coin-btn { 
-            width: 230px; 
-            cursor: pointer; 
-            transition: transform 0.1s; 
-            filter: drop-shadow(0 0 20px #ffd700); 
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* التصميم الرئيسي للنقر */
+        .balance { font-size: 60px; color: #ffd700; font-weight: bold; text-shadow: 0 0 25px rgba(255, 215, 0, 0.7); }
+        .coin-btn { width: 230px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); user-select: none; }
         .coin-btn:active { transform: scale(0.92); }
 
-        .energy-container { margin-top: 15px; width: 220px; }
-        .energy-text { font-size: 18px; color: #ffd700; margin-bottom: 5px; font-weight: bold; }
-        .energy-bar-bg { width: 100%; height: 10px; background: rgba(255, 255, 255, 0.2); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 215, 0, 0.3); }
-        .energy-bar-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #ffae00); width: 100%; transition: width 0.3s; }
+        /* تصميم العجلة */
+        .wheel-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd700; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); background: conic-gradient(#ff0000 0% 12.5%, #ff8000 12.5% 25%, #ffff00 25% 37.5%, #00ff00 37.5% 50%, #00ffff 50% 62.5%, #0000ff 62.5% 75%, #8000ff 75% 87.5%, #ff00ff 87.5% 100%); }
+        .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: #ffd700; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
 
-        .footer { 
-            width: 100%; 
-            display: flex; 
-            justify-content: space-around; 
-            background: rgba(0, 26, 51, 0.95); 
-            padding: 12px 0; 
-            border-top: 2px solid #ffd700; 
-            position: relative;
-        }
+        /* القائمة السفلية */
+        .footer { width: 100%; display: flex; justify-content: space-around; background: rgba(0, 26, 51, 0.95); padding: 12px 0; border-top: 2px solid #ffd700; }
         .nav-btn { background: none; border: none; color: #ccc; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; flex: 1; }
         .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .nav-btn span { font-size: 18px; margin-bottom: 3px; }
 
         .card { background: rgba(0, 0, 0, 0.7); border: 1px solid #ffd700; padding: 15px; border-radius: 15px; width: 85%; margin-top: 10px; }
-        .btn-action { background: #ffd700; color: #000; border: none; padding: 10px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; font-size: 15px; }
+        .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
+        .btn-action:disabled { background: #555; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -80,46 +48,25 @@
         <div id="home" class="tab-content active-tab">
             <div class="balance" id="score">0</div>
             <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()">
-            <div class="energy-container">
-                <div class="energy-text">⚡ <span id="energy-val">130</span> / 130</div>
-                <div class="energy-bar-bg"><div class="energy-bar-fill" id="energy-bar"></div></div>
-            </div>
+            <div style="margin-top:15px;">⚡ <span id="energy-val">130</span> / 130</div>
         </div>
 
         <div id="games" class="tab-content">
-            <h2 style="color: #ffd700;">🎮 العب واربح</h2>
-            <div class="card">
-                <p>لعبة الحظ اليومية</p>
-                <button class="btn-action" onclick="playGame()">دوران العجلة (مجاناً)</button>
+            <h2 style="color: #ffd700;">🎮 عجلة الحظ</h2>
+            <div class="wheel-container">
+                <div class="wheel-pointer"></div>
+                <div id="wheel"></div>
             </div>
-            <div class="card">
-                <p>توقع السعر واربح 5000 عملة</p>
-                <button class="btn-action" onclick="alert('ستتوفر قريباً!')">ابدأ التحدي</button>
-            </div>
+            <p>المحاولات المتاحة: <span id="spins-left">0</span> (1 لكل إحالة)</p>
+            <button class="btn-action" id="spin-btn" onclick="spinWheel()" disabled>دوران العجلة</button>
         </div>
 
         <div id="friends" class="tab-content">
-            <h2 style="color: #ffd700;">👥 دعوة الأصدقاء</h2>
+            <h2 style="color: #ffd700;">👥 الإحالات</h2>
             <div class="card">
-                <p>اربح 500 عملة عن كل صديق!</p>
-                <button class="btn-action" onclick="copyRef()">نسخ رابط الإحالة</button>
-            </div>
-        </div>
-
-        <div id="tasks" class="tab-content">
-            <h2 style="color: #ffd700;">💰 المهام</h2>
-            <div class="card">
-                <p>تابع قناتنا على تلجرام</p>
-                <button class="btn-action" onclick="window.open('https://t.me/Bitco93_official_bot')">انضم الآن</button>
-            </div>
-        </div>
-
-        <div id="wallet" class="tab-content">
-            <h2 style="color: #ffd700;">👛 المحفظة</h2>
-            <div class="card">
-                <p>رصيدك الحالي:</p>
-                <div style="font-size: 30px; color: #ffd700; font-weight: bold;"><span id="wallet-balance">0</span> عملة</div>
-                <button class="btn-action">سحب الأرباح (قريباً)</button>
+                <p>عدد أصدقائك: <span id="ref-count">0</span></p>
+                <button class="btn-action" onclick="addFakeRef()">محاكاة إحالة صديق (للتجربة)</button>
+                <button class="btn-action" onclick="copyRef()">نسخ الرابط</button>
             </div>
         </div>
     </div>
@@ -128,64 +75,66 @@
         <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
         <button class="nav-btn" onclick="showTab('games', this)"><span>🎮</span>العب</button>
         <button class="nav-btn" onclick="showTab('friends', this)"><span>👥</span>الأصدقاء</button>
-        <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span>المهام</button>
-        <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span>المحفظة</button>
     </div>
 
     <script>
         let score = parseInt(localStorage.getItem('score')) || 0;
-        let energy = parseInt(localStorage.getItem('energy')) || 130;
-        const maxEnergy = 130;
-        const fillSpeed = 360000 / maxEnergy;
+        let refs = parseInt(localStorage.getItem('refs')) || 0;
+        let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
+        let energy = 130;
+        const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
 
-        document.getElementById('score').innerText = score;
-        document.getElementById('wallet-balance').innerText = score;
-        updateEnergyUI();
-
-        function mine() {
-            if (energy > 0) {
-                score++; energy--;
-                document.getElementById('score').innerText = score;
-                document.getElementById('wallet-balance').innerText = score;
-                updateEnergyUI();
-                localStorage.setItem('score', score);
-                localStorage.setItem('energy', energy);
-                if (navigator.vibrate) navigator.vibrate(40);
-            }
+        function updateUI() {
+            document.getElementById('score').innerText = score;
+            document.getElementById('ref-count').innerText = refs;
+            let availableSpins = refs - usedSpins;
+            document.getElementById('spins-left').innerText = availableSpins;
+            document.getElementById('spin-btn').disabled = availableSpins <= 0;
         }
 
-        function updateEnergyUI() {
-            document.getElementById('energy-val').innerText = energy;
-            document.getElementById('energy-bar').style.width = (energy / maxEnergy * 100) + "%";
+        function mine() {
+            if (energy > 0) { score++; energy--; updateUI(); localStorage.setItem('score', score); }
+        }
+
+        function spinWheel() {
+            if (refs - usedSpins <= 0) return;
+            
+            usedSpins++;
+            localStorage.setItem('usedSpins', usedSpins);
+            updateUI();
+
+            const wheel = document.getElementById('wheel');
+            const randomDeg = Math.floor(Math.random() * 360) + 3600; // 10 دورات + زاوية عشوائية
+            wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+            setTimeout(() => {
+                const actualDeg = randomDeg % 360;
+                const section = Math.floor(actualDeg / 45);
+                const win = rewards[section];
+                score += win;
+                localStorage.setItem('score', score);
+                alert(`مبروك! فزت بـ ${win} عملة`);
+                updateUI();
+            }, 4000);
+        }
+
+        function addFakeRef() {
+            refs++;
+            localStorage.setItem('refs', refs);
+            updateUI();
+            alert("تمت إضافة صديق! لديك محاولة دوران الآن.");
         }
 
         function showTab(tabId, btn) {
-            const contents = document.getElementsByClassName('tab-content');
-            for (let i = 0; i < contents.length; i++) { contents[i].style.display = 'none'; }
-            const buttons = document.getElementsByClassName('nav-btn');
-            for (let i = 0; i < buttons.length; i++) { buttons[i].classList.remove('active'); }
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabId).style.display = 'flex';
             btn.classList.add('active');
         }
 
-        function playGame() {
-            let win = Math.floor(Math.random() * 100);
-            score += win;
-            document.getElementById('score').innerText = score;
-            localStorage.setItem('score', score);
-            alert("مبروك! ربحت " + win + " عملة من عجلة الحظ.");
-        }
+        function copyRef() { alert("تم نسخ رابط الإحالة!"); }
 
-        function copyRef() {
-            alert("تم نسخ رابط الإحالة الخاص بك!");
-        }
-
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++; updateEnergyUI();
-                localStorage.setItem('energy', energy);
-            }
-        }, fillSpeed);
+        updateUI();
     </script>
 </body>
 </html>
