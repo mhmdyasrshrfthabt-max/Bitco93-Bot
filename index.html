@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Mining & Spin Wheel</title>
+    <title>Bitco93 - Spin & Mine</title>
     <style>
         body { 
             background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png') no-repeat center center fixed; 
@@ -22,15 +22,28 @@
         .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
         .active-tab { display: flex; }
 
-        /* التصميم الرئيسي للنقر */
-        .balance { font-size: 60px; color: #ffd700; font-weight: bold; text-shadow: 0 0 25px rgba(255, 215, 0, 0.7); }
-        .coin-btn { width: 230px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); user-select: none; }
+        /* عداد النقاط */
+        .balance { font-size: 60px; color: #ffd700; font-weight: bold; text-shadow: 0 0 25px rgba(255, 215, 0, 0.7); margin-bottom: 10px; }
+        .coin-btn { width: 220px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); user-select: none; }
         .coin-btn:active { transform: scale(0.92); }
 
-        /* تصميم العجلة */
-        .wheel-container { position: relative; width: 300px; height: 300px; margin: 20px auto; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd700; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); background: conic-gradient(#ff0000 0% 12.5%, #ff8000 12.5% 25%, #ffff00 25% 37.5%, #00ff00 37.5% 50%, #00ffff 50% 62.5%, #0000ff 62.5% 75%, #8000ff 75% 87.5%, #ff00ff 87.5% 100%); }
-        .wheel-pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 40px; background: #ffd700; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        /* تصميم العجلة الدائرية */
+        .wheel-box { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        #wheel { 
+            width: 100%; height: 100%; border-radius: 50%; border: 8px solid #ffd700; 
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            background: conic-gradient(
+                #ff4d4d 0deg 45deg, #ff944d 45deg 90deg, #ffd14d 90deg 135deg, #4dff88 135deg 180deg,
+                #4dffff 180deg 225deg, #4d88ff 225deg 270deg, #944dff 270deg 315deg, #ff4dff 315deg 360deg
+            );
+            position: relative;
+        }
+        /* السهم المشير للجائزة */
+        .pointer { 
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%); 
+            width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent;
+            border-top: 30px solid #ffd700; z-index: 10;
+        }
 
         /* القائمة السفلية */
         .footer { width: 100%; display: flex; justify-content: space-around; background: rgba(0, 26, 51, 0.95); padding: 12px 0; border-top: 2px solid #ffd700; }
@@ -38,8 +51,8 @@
         .nav-btn.active { color: #ffd700; font-weight: bold; }
 
         .card { background: rgba(0, 0, 0, 0.7); border: 1px solid #ffd700; padding: 15px; border-radius: 15px; width: 85%; margin-top: 10px; }
-        .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 10px; }
-        .btn-action:disabled { background: #555; cursor: not-allowed; }
+        .btn-spin { background: #ffd700; color: #000; border: none; padding: 12px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 18px; width: 80%; }
+        .btn-spin:disabled { background: #555; color: #888; cursor: not-allowed; }
     </style>
 </head>
 <body>
@@ -48,81 +61,91 @@
         <div id="home" class="tab-content active-tab">
             <div class="balance" id="score">0</div>
             <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()">
-            <div style="margin-top:15px;">⚡ <span id="energy-val">130</span> / 130</div>
+            <div style="margin-top:20px; font-size: 20px;">⚡ <span id="energy-val">130</span> / 130</div>
         </div>
 
         <div id="games" class="tab-content">
-            <h2 style="color: #ffd700;">🎮 عجلة الحظ</h2>
-            <div class="wheel-container">
-                <div class="wheel-pointer"></div>
+            <h2 style="color: #ffd700; margin-bottom: 5px;">🎮 عجلة الحظ</h2>
+            <p style="margin-bottom: 10px;">المحاولات: <span id="spins-left" style="color:#ffd700; font-weight:bold;">0</span></p>
+            
+            <div class="wheel-box">
+                <div class="pointer"></div>
                 <div id="wheel"></div>
             </div>
-            <p>المحاولات المتاحة: <span id="spins-left">0</span> (1 لكل إحالة)</p>
-            <button class="btn-action" id="spin-btn" onclick="spinWheel()" disabled>دوران العجلة</button>
+
+            <button class="btn-spin" id="spin-btn" onclick="startSpin()" disabled>اضغط لتدوير العجلة</button>
+            <p style="font-size: 12px; margin-top: 10px; color: #aaa;">(تحصل على محاولة واحدة لكل صديق تدعوه)</p>
         </div>
 
         <div id="friends" class="tab-content">
-            <h2 style="color: #ffd700;">👥 الإحالات</h2>
+            <h2 style="color: #ffd700;">👥 نظام الإحالة</h2>
             <div class="card">
-                <p>عدد أصدقائك: <span id="ref-count">0</span></p>
-                <button class="btn-action" onclick="addFakeRef()">محاكاة إحالة صديق (للتجربة)</button>
-                <button class="btn-action" onclick="copyRef()">نسخ الرابط</button>
+                <p>إجمالي الأصدقاء الذين دعوتهم: <span id="ref-count" style="color:#ffd700;">0</span></p>
+                <hr style="border: 0.5px solid #333;">
+                <p style="font-size: 14px;">كل صديق جديد = 500 عملة + 1 محاولة تدوير</p>
+                <button style="background:#ffd700; border:none; padding:10px; border-radius:5px; font-weight:bold; width:100%;" onclick="copyLink()">نسخ رابط الدعوة</button>
             </div>
+            <button onclick="addTestRef()" style="margin-top:20px; background:none; border:1px solid #555; color:#555; font-size:10px;">إضافة صديق وهمي للتجربة</button>
         </div>
     </div>
 
     <div class="footer">
         <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
-        <button class="nav-btn" onclick="showTab('games', this)"><span>🎮</span>العب</button>
+        <button class="nav-btn" onclick="showTab('games', this)"><span>🎡</span>العجلة</button>
         <button class="nav-btn" onclick="showTab('friends', this)"><span>👥</span>الأصدقاء</button>
     </div>
 
     <script>
+        // تحميل البيانات
         let score = parseInt(localStorage.getItem('score')) || 0;
         let refs = parseInt(localStorage.getItem('refs')) || 0;
-        let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
+        let spinsUsed = parseInt(localStorage.getItem('spinsUsed')) || 0;
         let energy = 130;
+
+        // الجوائز بالترتيب حسب أقسام العجلة (8 أقسام)
         const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
 
-        function updateUI() {
+        function updateDisplay() {
             document.getElementById('score').innerText = score;
             document.getElementById('ref-count').innerText = refs;
-            let availableSpins = refs - usedSpins;
+            
+            let availableSpins = refs - spinsUsed;
             document.getElementById('spins-left').innerText = availableSpins;
-            document.getElementById('spin-btn').disabled = availableSpins <= 0;
+            document.getElementById('spin-btn').disabled = (availableSpins <= 0);
         }
 
         function mine() {
-            if (energy > 0) { score++; energy--; updateUI(); localStorage.setItem('score', score); }
+            if (energy > 0) {
+                score++; energy--;
+                document.getElementById('energy-val').innerText = energy;
+                updateDisplay();
+                localStorage.setItem('score', score);
+            }
         }
 
-        function spinWheel() {
-            if (refs - usedSpins <= 0) return;
-            
-            usedSpins++;
-            localStorage.setItem('usedSpins', usedSpins);
-            updateUI();
+        function startSpin() {
+            let available = refs - spinsUsed;
+            if (available <= 0) return;
+
+            spinsUsed++;
+            localStorage.setItem('spinsUsed', spinsUsed);
+            updateDisplay();
 
             const wheel = document.getElementById('wheel');
-            const randomDeg = Math.floor(Math.random() * 360) + 3600; // 10 دورات + زاوية عشوائية
-            wheel.style.transform = `rotate(${randomDeg}deg)`;
+            const spinDeg = Math.floor(Math.random() * 360) + 3600; // 10 دورات كاملة + زاوية عشوائية
+            wheel.style.transform = `rotate(${spinDeg}deg)`;
 
             setTimeout(() => {
-                const actualDeg = randomDeg % 360;
-                const section = Math.floor(actualDeg / 45);
+                // حساب الجائزة بناءً على الزاوية النهائية
+                const actualDeg = spinDeg % 360;
+                const section = Math.floor(actualDeg / 45); // 360 تقسيم 8 أقسام = 45 درجة
                 const win = rewards[section];
+                
                 score += win;
                 localStorage.setItem('score', score);
-                alert(`مبروك! فزت بـ ${win} عملة`);
-                updateUI();
+                updateDisplay();
+                alert("مبروك! لقد ربحت: " + win + " عملة");
             }, 4000);
-        }
-
-        function addFakeRef() {
-            refs++;
-            localStorage.setItem('refs', refs);
-            updateUI();
-            alert("تمت إضافة صديق! لديك محاولة دوران الآن.");
         }
 
         function showTab(tabId, btn) {
@@ -132,9 +155,16 @@
             btn.classList.add('active');
         }
 
-        function copyRef() { alert("تم نسخ رابط الإحالة!"); }
+        // لإضافة إحالة تجريبية لتجربة العجلة
+        function addTestRef() {
+            refs++;
+            localStorage.setItem('refs', refs);
+            updateDisplay();
+        }
 
-        updateUI();
+        function copyLink() { alert("تم نسخ الرابط!"); }
+
+        updateDisplay();
     </script>
 </body>
 </html>
