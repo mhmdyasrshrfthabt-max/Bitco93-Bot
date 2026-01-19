@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, APIRouter, HTTPException
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
@@ -8,13 +9,13 @@ from pydantic import BaseModel, Field, ConfigDict
 from typing import List, Optional
 from datetime import datetime, timezone
 
-# إعداد المسارات وتحميل الإعدادات
+# إعداد المسارات
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
-app = FastAPI(title="Bitco93 Backend Server")
+app = FastAPI(title="Bitco93 Backend")
 
-# تفعيل CORS لضمان اتصال واجهة البوت (index.html) بالسيرفر دون مشاكل
+# تفعيل CORS لربط الواجهة بالسيرفر
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -23,62 +24,54 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# الاتصال بقاعدة البيانات MongoDB
-MONGO_URL = os.getenv('MONGO_URL', 'mongodb://localhost:27017')
-DB_NAME = os.getenv('DB_NAME', 'bitco93_db')
+# الربط بقاعدة البيانات
+MONGO_URL = os.getenv('MONGO_URL')
 client = AsyncIOMotorClient(MONGO_URL)
-db = client[DB_NAME]
+db = client[os.getenv('DB_NAME', 'bitco93_db')]
 
 api_router = APIRouter(prefix="/api")
 
-# --- النماذج (Models) ---
+# روابط الصور الجديدة التي أرسلتها
+BG_IMAGE = "https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png"
+COIN_IMAGE = "https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png"
 
 class User(BaseModel):
     model_config = ConfigDict(extra="ignore")
     telegram_id: str
     username: Optional[str] = None
-    first_name: Optional[str] = None
     score: int = 0
     referral_code: str
     referred_by: Optional[str] = None
-    # الصورة التي طلبتها لتكون خلفية أو صورة افتراضية
-    bg_image: str = "https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png"
     completed_tasks: List[str] = []
-    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    last_ad_view: Optional[datetime] = None
 
-class TaskVerify(BaseModel):
-    telegram_id: str
-    task_id: str
+# --- المسارات الجديدة للتنسيق مع البوت ---
 
-# --- العمليات (Routes) ---
-
-# 1. تسجيل الدخول وجلب بيانات المستخدم
 @api_router.post("/login")
 async def login(user_data: User):
     user = await db.users.find_one({"telegram_id": user_data.telegram_id})
     if not user:
         user_dict = user_data.dict()
         await db.users.insert_one(user_dict)
-        return {"status": "success", "user": user_dict}
-    return {"status": "success", "user": user}
+        return {"status": "success", "user": user_dict, "assets": {"bg": BG_IMAGE, "coin": COIN_IMAGE}}
+    return {"status": "success", "user": user, "assets": {"bg": BG_IMAGE, "coin": COIN_IMAGE}}
 
-# 2. نظام التحقق من المهام (Task Verification)
+# نظام التحقق من المهام (Task Verification)
 @api_router.post("/tasks/verify")
-async def verify_task(data: TaskVerify):
-    user = await db.users.find_one({"telegram_id": data.telegram_id})
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    # إضافة المهمة لقائمة المهام المكتملة وزيادة الرصيد (مثلاً 500 نقطة)
-    if data.task_id not in user.get("completed_tasks", []):
-        await db.users.update_one(
-            {"telegram_id": data.telegram_id},
-            {
-                "$push": {"completed_tasks": data.task_id},
-                "$inc": {"score": 500}
-            }
-        )
-        return {"status": "verified", "reward": 500}
-    return {"status": "already_done"}
+async def verify_task(telegram_id: str, task_id: str):
+    # كود التحقق من إتمام المهمة (مثل الاشتراك في القناة)
+    result = await db.users.update_one(
+        {"telegram_id": telegram_id},
+        {"$addToSet": {"completed_tasks": task_id}, "$inc": {"score": 1000}}
+    )
+    return {"status": "verified", "bonus": 1000}
+
+# نظام الإعلانات (AdGram Integration)
+@api_router.get("/ads/config")
+async def get_ad_config():
+    return {
+        "adgram_token": "YOUR_ADGRAM_TOKEN", # هنا تضع توكن الإعلانات الخاص بك
+        "reward_per_ad": 500
+    }
 
 app.include_router(api_router)
