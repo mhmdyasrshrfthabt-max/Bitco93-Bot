@@ -1,13 +1,13 @@
-imgCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitco93 Mining</title>
     <style>
-        /* إضافة صورة خلفية بدلاً من اللون الأسود */
+        /* الخلفية الزرقاء الجديدة التي طلبتها */
         body { 
-            background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png') no-repeat center center fixed; 
+            background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png') no-repeat center center fixed; 
             background-size: cover;
             color: white; 
             text-align: center; 
@@ -16,19 +16,19 @@ imgCTYPE html>
             overflow: hidden; 
         }
 
-        /* طبقة عاتمة فوق الخلفية لتوضيح العناصر */
+        /* تعتيم خفيف للخلفية لإبراز المحتوى */
         .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); /* تعتيم بنسبة 80% */
+            background: rgba(0, 0, 0, 0.4); 
             z-index: -1;
         }
 
-        /* شاشة الفتح (Loading) */
+        /* شاشة التحميل باستخدام الصورة الزرقاء */
         #loading-screen {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
+            background: #001a33;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -46,22 +46,34 @@ imgCTYPE html>
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 30px; }
+        .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 30px; text-shadow: 2px 2px 10px rgba(0,0,0,0.5); }
         .tab-content { display: none; padding: 20px; height: 70vh; overflow-y: auto; }
         .active-tab { display: block; }
-        .coin-balance { width: 260px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); margin-top: 20px; }
-        .coin-btn:active { transform: scale(0.9); }
-        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(17, 17, 17, 0.9); padding: 15px 0; border-top: 2px solid #333; }
-        .nav-btn { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
+        
+        /* زر العملة (الشعار الذهبي) */
+        .coin-btn { 
+            width: 220px; 
+            cursor: pointer; 
+            transition: transform 0.1s; 
+            filter: drop-shadow(0 0 15px #ffd700); 
+            margin-top: 20px; 
+            display: block; 
+            margin-left: auto; 
+            margin-right: auto;
+        }
+        .coin-btn:active { transform: scale(0.95); }
+
+        .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(0, 26, 51, 0.95); padding: 15px 0; border-top: 2px solid #ffd700; }
+        .nav-btn { background: none; border: none; color: #ccc; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
         .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .task-card { background: rgba(26, 26, 26, 0.8); border: 1px solid #333; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: right; }
+        .task-card { background: rgba(0, 0, 0, 0.6); border: 1px solid #ffd700; padding: 15px; border-radius: 12px; margin-bottom: 10px; text-align: right; }
         .btn-action { background: #ffd700; color: #000; border: none; padding: 8px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png" width="150" style="margin-bottom: 20px;">
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" width="120" style="margin-bottom: 20px;">
         <div class="loader"></div>
         <p style="color: #ffd700; margin-top: 15px;">جاري تحميل Bitco93...</p>
     </div>
@@ -69,11 +81,9 @@ imgCTYPE html>
     <div class="overlay"></div>
 
     <div id="home" class="tab-content active-tab">
-        <classss="balance" id="score">0</div>
-<img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()" id="coin" style="width: 200px; height: auto; display: block; margin: 0 auto;">
-
-
-        <p style="color: #ffd700; margin-top: 20px; font-weight: bold;">اضغط للربح!</p>
+        <div class="balance" id="score">0</div>
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()" id="coin">
+        <p style="color: #ffd700; margin-top: 20px; font-weight: bold; font-size: 1.2em;">اضغط للربح!</p>
     </div>
 
     <div id="tasks" class="tab-content">
@@ -87,19 +97,18 @@ imgCTYPE html>
     <div id="wallet" class="tab-content">
         <h2 style="color: #ffd700;">محفظة TON</h2>
         <div style="margin-top: 50px;">
-            <p>رصيدك الحالي: <span id="wallet-balance" sstyle"color: #ffd700;">0</span> عملة</p>
+            <p>رصيدك الحالي: <span id="wallet-balance" style="color: #ffd700;">0</span> عملة</p>
             <button class="btn-action" style="width: 80%; padding: 15px;" onclick="connectTON()">ربط محفظة TON Connect</button>
         </div>
     </div>
 
     <div class="footer">
-        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</sالالرئيسيةية</button>
-        <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span>المهام</button>
-        <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span>المحفظة</button>
+        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span> الرئيسية</button>
+        <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span> المهام</button>
+        <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span> المحفظة</button>
     </div>
 
     <script>
-        // إخفاء شاشة التحميل بعد ثانيتين
         window.onload = function() {
             setTimeout(() => {
                 document.getElementById('loading-screen').style.display = 'none';
