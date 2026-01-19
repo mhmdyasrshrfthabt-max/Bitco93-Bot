@@ -3,52 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 - النسخة الاحترافية</title>
+    <title>Bitco93 - v3.0</title>
     <style>
-        body { 
-            background: #000; color: white; text-align: center; font-family: Arial, sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
-        }
-        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 100px; overflow-y: auto; }
+        body { background: #000; color: white; text-align: center; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column; }
+        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 90px; overflow-y: auto; }
         .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; }
         .active-tab { display: flex; }
 
-        /* العجلة: ألوان خفيفة وأرقام سوداء */
-        .wheel-box { position: relative; width: 280px; height: 280px; margin: 20px auto; }
+        /* العجلة: ألوان خفيفة جداً وأرقام سوداء واضحة */
+        .wheel-box { position: relative; width: 260px; height: 260px; margin: 15px auto; }
         #wheel { 
             width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd700; position: relative;
             transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow: hidden;
-            background: conic-gradient(#ffcdd2 0deg 45deg, #ffe0b2 45deg 90deg, #fff9c4 90deg 135deg, #c8e6c9 135deg 180deg, #b2ebf2 180deg 225deg, #bbdefb 225deg 270deg, #d1c4e9 270deg 315deg, #f8bbd0 315deg 360deg);
+            background: conic-gradient(#f9f9f9 0deg 45deg, #e3f2fd 45deg 90deg, #f1f8e9 90deg 135deg, #fff3e0 135deg 180deg, #fce4ec 180deg 225deg, #f3e5f5 225deg 270deg, #efebe9 270deg 315deg, #eeeeee 315deg 360deg);
         }
-        .num { 
-            position: absolute; width: 100%; height: 100%; transform: rotate(calc(45deg * var(--i))); 
-            text-align: center; font-weight: bold; font-size: 22px; color: #000; padding-top: 25px; box-sizing: border-box; 
-        }
+        .num { position: absolute; width: 100%; height: 100%; transform: rotate(calc(45deg * var(--i))); text-align: center; font-weight: 900; font-size: 22px; color: #000; padding-top: 15px; box-sizing: border-box; }
         .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ffd700; z-index: 10; }
 
         /* القائمة السفلية (7 خانات) */
-        .footer { width: 100%; display: flex; justify-content: space-around; background: #0a0a0a; padding: 12px 0; border-top: 2px solid #333; position: fixed; bottom: 0; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #888; font-size: 9px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
+        .footer { width: 100%; display: flex; justify-content: space-around; background: #111; padding: 10px 0; border-top: 1px solid #ffd700; position: fixed; bottom: 0; }
+        .nav-btn { background: none; border: none; color: #777; font-size: 8px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
         .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .nav-btn span { font-size: 20px; margin-bottom: 3px; }
+        .nav-btn span { font-size: 18px; margin-bottom: 2px; }
 
-        /* البطاقات */
-        .card { background: #1a1a1a; border-radius: 15px; width: 85%; padding: 20px; border: 1px solid #ffd700; margin: 10px 0; }
-        .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
-        .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; width: 100%; }
-        select { background: #333; color: white; border: 1px solid #ffd700; padding: 5px; border-radius: 5px; }
+        /* الأزرار والبطاقات */
+        .card { background: #1a1a1a; border-radius: 12px; width: 85%; padding: 15px; border: 1px solid #333; margin-top: 10px; }
+        .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        select { background: #222; color: #ffd700; border: 1px solid #ffd700; padding: 8px; border-radius: 5px; width: 100%; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div class="content-area">
     <div id="home" class="tab-content active-tab">
-        <h1 id="score" style="font-size: 50px; color: #ffd700;">0</h1>
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" style="width:200px;" onclick="mine()">
+        <h1 id="score" style="font-size: 55px; color: #ffd700; margin: 10px 0;">0</h1>
+        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" style="width:180px;" onclick="mine()">
         <p>⚡ <span id="energy-val">130</span> / 130</p>
     </div>
 
     <div id="spin" class="tab-content">
-        <h2>🎡 عجلة الحظ</h2>
+        <h2>عجلة الحظ</h2>
         <p>المحاولات: <span id="spins-left">0</span></p>
         <div class="wheel-box">
             <div class="pointer"></div>
@@ -64,42 +58,38 @@
 
     <div id="games" class="tab-content">
         <h2>🎮 الألعاب</h2>
-        <div class="card"><p>ألعاب جديدة قادمة قريباً!</p></div>
+        <div class="card"><p>ألعاب (همستر) قريباً!</p></div>
     </div>
 
     <div id="friends" class="tab-content">
         <div class="card">
             <h2>👥 الأصدقاء</h2>
-            <h3 style="color:#ffd700;">عدد الإحالات: <span id="ref-count">0</span></h3>
-            <p>شارك الرابط مع أصدقائك</p>
-            <p style="font-size: 12px;">كل صديق يشترك = 1 تدوير عجلة</p>
-            <button onclick="shareInvite()" class="btn-action">نسخ رابط المشاركة</button>
+            <h3 id="ref-count-text">الإحالات الحقيقية: <span id="ref-count">0</span></h3>
+            <p style="font-size: 13px;">شارك الرابط: عند انضمام صديق حقيقي تحصل على 1 تدوير.</p>
+            <button onclick="shareLink()" class="btn-action">نسخ رابط المشاركة</button>
         </div>
     </div>
 
     <div id="tasks" class="tab-content">
         <h2>💰 المهام</h2>
-        <div class="card"><p>أكمل المهام لزيادة رصيدك.</p></div>
+        <div class="card"><p>لا توجد مهام حالياً.</p></div>
     </div>
 
     <div id="wallet" class="tab-content">
         <h2>👛 المحفظة</h2>
-        <div class="card"><p>الرصيد القابل للسحب: <span id="wallet-score">0</span></p></div>
+        <div class="card"><p>الرصيد: <span id="wallet-balance">0</span></p></div>
     </div>
 
     <div id="settings" class="tab-content">
         <div class="card">
             <h2>⚙️ الإعدادات</h2>
-            <div class="setting-item">
-                <span>🌐 اللغة:</span>
-                <select id="lang">
-                    <option value="ar">العربية</option>
-                    <option value="en">English</option>
-                    <option value="ru">Русский</option>
-                </select>
-            </div>
-            <div class="setting-item"><span>📳 الاهتزاز</span><input type="checkbox" checked></div>
-            <div class="setting-item"><span>🌙 الوضع الليلي</span><input type="checkbox" checked disabled></div>
+            <label>🌐 اختيار اللغة:</label>
+            <select>
+                <option>العربية</option>
+                <option>English</option>
+                <option>Русский</option>
+            </select>
+            <p>📳 الاهتزاز: <input type="checkbox" checked></p>
         </div>
     </div>
 </div>
@@ -116,51 +106,50 @@
 
 <script>
     let score = parseInt(localStorage.getItem('score')) || 0;
-    let energy = 130;
-    let refs = parseInt(localStorage.getItem('refs')) || 0; 
+    let refs = parseInt(localStorage.getItem('refs')) || 0;
     let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
+    let energy = 130;
     const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
 
-    function updateAll() {
+    function updateUI() {
         document.getElementById('score').innerText = score;
-        document.getElementById('wallet-score').innerText = score;
+        document.getElementById('wallet-balance').innerText = score;
         document.getElementById('ref-count').innerText = refs;
-        let av = refs - usedSpins;
-        document.getElementById('spins-left').innerText = av;
-        document.getElementById('spin-btn').disabled = (av <= 0);
+        let available = refs - usedSpins;
+        document.getElementById('spins-left').innerText = available;
+        document.getElementById('spin-btn').disabled = (available <= 0);
     }
 
-    function mine() { if(energy > 0) { score++; energy--; updateAll(); localStorage.setItem('score', score); } }
+    function mine() { if(energy > 0) { score++; energy--; updateUI(); localStorage.setItem('score', score); } }
 
-    // وظيفة مشاركة الرابط (لا تزيد العداد تلقائياً)
-    function shareInvite() {
-        const url = `https://t.me/Bitco93_bot?start=${Math.floor(Math.random()*99999)}`;
-        navigator.clipboard.writeText(url);
-        alert("تم نسخ رابط الإحالة! شاركه ليقوم أصدقاؤك بالاشتراك.");
+    function shareLink() {
+        const link = "https://t.me/Bitco93_bot?start=" + Math.floor(Math.random()*1000);
+        navigator.clipboard.writeText(link);
+        alert("تم نسخ رابطك! العداد سيزيد عند دخول صديق حقيقي عبر الرابط.");
     }
 
     function startSpin() {
-        if (refs - usedSpins <= 0) return;
+        if((refs - usedSpins) <= 0) return;
         usedSpins++; localStorage.setItem('usedSpins', usedSpins);
         const wheel = document.getElementById('wheel');
-        const randomDeg = Math.floor(Math.random() * 8) * 45;
-        const totalDeg = 3600 + randomDeg;
-        wheel.style.transform = `rotate(${totalDeg}deg)`;
+        const rand = Math.floor(Math.random() * 8) * 45;
+        const total = 3600 + rand;
+        wheel.style.transform = `rotate(${total}deg)`;
         setTimeout(() => {
-            const index = Math.floor(((360 - (totalDeg % 360)) % 360) / 45);
-            const win = rewards[index];
-            score += win; localStorage.setItem('score', score); updateAll();
-            alert("فزت بـ " + win);
+            const idx = Math.floor(((360 - (total % 360)) % 360) / 45);
+            score += rewards[idx]; localStorage.setItem('score', score); updateUI();
+            alert("ربحت " + rewards[idx]);
         }, 4000);
     }
 
     function showTab(id, btn) {
         document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
         document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'flex'; btn.classList.add('active');
+        document.getElementById(id).style.display = 'flex';
+        btn.classList.add('active');
     }
 
-    updateAll();
+    updateUI();
 </script>
 </body>
 </html>
