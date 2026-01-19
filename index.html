@@ -1,100 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Bot - النسخة النهائية</title>
-    <style>
-        body { 
-            background: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500548.png') no-repeat center center fixed; 
-            background-size: cover; color: white; text-align: center; font-family: Arial, sans-serif; margin: 0; height: 100vh; overflow: hidden; display: flex; flex-direction: column;
-        }
-        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 90px; overflow-y: auto; }
-        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; padding: 20px 0; }
-        .active-tab { display: flex; }
-
-        /* الرئيسية */
-        .balance { font-size: 60px; color: #ffd700; font-weight: bold; text-shadow: 0 0 20px rgba(255, 215, 0, 0.7); }
-        .coin-btn { width: 220px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 15px #ffd700); }
-        .coin-btn:active { transform: scale(0.92); }
-        .energy-bar-bg { width: 200px; height: 10px; background: rgba(255,255,255,0.2); border-radius: 10px; margin: 10px auto; border: 1px solid #ffd700; overflow: hidden; }
-        .energy-bar-fill { height: 100%; background: #ffd700; width: 100%; transition: width 0.3s; }
-
-        /* العجلة */
-        .wheel-box { position: relative; width: 260px; height: 260px; margin: 20px auto; }
-        #wheel { 
-            width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd700; position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow: hidden;
-            background: conic-gradient(#ff4d4d 0deg 45deg, #ff944d 45deg 90deg, #ffd14d 90deg 135deg, #4dff88 135deg 180deg, #4dffff 180deg 225deg, #4d88ff 225deg 270deg, #944dff 270deg 315deg, #ff4dff 315deg 360deg);
-        }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ffd700; z-index: 10; }
-        .num { position: absolute; width: 100%; height: 100%; transform: rotate(calc(45deg * var(--i))); text-align: center; font-weight: bold; font-size: 16px; color: white; padding-top: 20px; box-sizing: border-box; }
-
-        /* القائمة السفلية (7 خانات) */
-        .footer { width: 100%; display: flex; justify-content: space-around; background: #001a33; padding: 10px 0; border-top: 2px solid #ffd700; position: fixed; bottom: 0; }
-        .nav-btn { background: none; border: none; color: #ccc; font-size: 9px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
-        .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .nav-btn span { font-size: 18px; margin-bottom: 2px; }
-
-        .card { background: rgba(0, 0, 0, 0.7); border: 1px solid #ffd700; padding: 15px; border-radius: 15px; width: 85%; margin-top: 10px; }
-        .btn-action { background: #ffd700; color: black; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; }
-    </style>
-</head>
-<body>
-
-<div class="content-area">
-    <div id="home" class="tab-content active-tab">
-        <div class="balance" id="score">0</div>
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="coin-btn" onclick="mine()">
-        <div style="margin-top:10px;">⚡ <span id="energy-val">130</span> / 130</div>
-        <div class="energy-bar-bg"><div class="energy-bar-fill" id="energy-bar"></div></div>
-    </div>
-
-    <div id="spin" class="tab-content">
-        <h2 style="color:#ffd700;">🎡 عجلة الحظ</h2>
-        <p>المحاولات: <span id="spins-left" style="color:#ffd700;">0</span></p>
-        <div class="wheel-box">
-            <div class="pointer"></div>
-            <div id="wheel">
-                <div class="num" style="--i:0;">50</div><div class="num" style="--i:1;">20</div>
-                <div class="num" style="--i:2;">10</div><div class="num" style="--i:3;">5</div>
-                <div class="num" style="--i:4;">0</div><div class="num" style="--i:5;">100</div>
-                <div class="num" style="--i:6;">75</div><div class="num" style="--i:7;">80</div>
-            </div>
-        </div>
-        <button onclick="startSpin()" id="spin-btn" class="btn-action" style="width: auto; padding: 10px 40px;" disabled>تدوير!</button>
-    </div>
-
-    <div id="games" class="tab-content">
-        <h2 style="color:#ffd700;">🎮 الألعاب</h2>
-        <div class="card"><p>ألعاب جديدة قادمة قريباً لتضاعف أرباحك!</p></div>
-    </div>
-
-    <div id="friends" class="tab-content">
-        <h2 style="color:#ffd700;">👥 الأصدقاء</h2>
-        <div class="card">
-            <h3 style="color:#ffd700;">عدد الإحالات: <span id="ref-count">0</span></h3>
-            <p style="font-weight: bold;">احاله واحده = 1 تدوير عجلة</p>
-            <button onclick="addFakeRef()" class="btn-action">نسخ رابط الدعوة</button>
-        </div>
-    </div>
-
-    <div id="tasks" class="tab-content">
-        <h2 style="color:#ffd700;">💰 المهام</h2>
-        <div class="card"><p>نفذ المهام اليومية واحصل على مكافآت فورية.</p></div>
-    </div>
-
-    <div id="wallet" class="tab-content">
-        <h2 style="color:#ffd700;">👛 المحفظة</h2>
-        <div class="card"><p>رصيدك الحالي: <span id="wallet-score">0</span></p></div>
-    </div>
-
-    <div id="settings" class="tab-content">
-        <h2 style="color:#ffd700;">⚙️ الإعدادات</h2>
-        <div class="card"><p>تحكم في إعدادات حسابك والدعم الفني.</p></div>
-    </div>
-</div>
-
 <div class="footer">
     <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
     <button class="nav-btn" onclick="showTab('spin', this)"><span>🎡</span>العجلة</button>
@@ -105,66 +8,18 @@
     <button class="nav-btn" onclick="showTab('settings', this)"><span>⚙️</span>الإعدادات</button>
 </div>
 
-<script>
-    // تهيئة البيانات
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let energy = parseInt(localStorage.getItem('energy')) || 130;
-    let refs = parseInt(localStorage.getItem('refs')) || 0;
-    let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
-    const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
-
-    function updateAll() {
-        document.getElementById('score').innerText = score;
-        document.getElementById('wallet-score').innerText = score;
-        document.getElementById('energy-val').innerText = energy;
-        document.getElementById('energy-bar').style.width = (energy / 130 * 100) + "%";
-        document.getElementById('ref-count').innerText = refs;
-        let avSpins = refs - usedSpins;
-        document.getElementById('spins-left').innerText = avSpins;
-        document.getElementById('spin-btn').disabled = avSpins <= 0;
-    }
-
-    function mine() {
-        if (energy > 0) { 
-            score++; energy--; 
-            updateAll(); 
-            localStorage.setItem('score', score); localStorage.setItem('energy', energy);
-            if (navigator.vibrate) navigator.vibrate(40);
-        }
-    }
-
-    function addFakeRef() {
-        refs++; localStorage.setItem('refs', refs);
-        updateAll();
-        alert("تم نسخ الرابط! تم احتساب إحالة واحدة بنجاح.");
-    }
-
-    function startSpin() {
-        let av = refs - usedSpins;
-        if (av <= 0) return;
-        usedSpins++; localStorage.setItem('usedSpins', usedSpins); updateAll();
-        
-        const wheel = document.getElementById('wheel');
-        const randomExtra = Math.floor(Math.random() * 8) * 45;
-        const totalDeg = 3600 + randomExtra;
-        wheel.style.transform = `rotate(${totalDeg}deg)`;
-        
-        setTimeout(() => {
-            const actualAngle = (360 - (totalDeg % 360)) % 360;
-            const win = rewards[Math.floor(actualAngle / 45)];
-            score += win; localStorage.setItem('score', score); updateAll();
-            alert("فزت بـ " + win + " عملة!");
-        }, 4000);
-    }
-
-    function showTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'flex'; btn.classList.add('active');
-    }
-
-    setInterval(() => { if (energy < 130) { energy++; updateAll(); localStorage.setItem('energy', energy); } }, 2769);
-    updateAll();
-</script>
-</body>
-</html>
+<div class="content-area">
+    <div id="home" class="tab-content active-tab"> ... </div>
+    
+    <div id="spin" class="tab-content"> ... </div>
+    
+    <div id="games" class="tab-content"> ... </div>
+    
+    <div id="friends" class="tab-content"> ... </div>
+    
+    <div id="tasks" class="tab-content"> ... </div>
+    
+    <div id="wallet" class="tab-content"> ... </div>
+    
+    <div id="settings" class="tab-content"> ... </div>
+</div>
