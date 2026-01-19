@@ -49,7 +49,7 @@
         .balance { font-size: 50px; color: #ffd700; font-weight: bold; margin-top: 30px; }
         .tab-content { display: none; padding: 20px; height: 70vh; overflow-y: auto; }
         .active-tab { display: block; }
-        .coin-btn { width: 260px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); margin-top: 20px; }
+        .coin-balance { width: 260px; cursor: pointer; transition: transform 0.1s; filter: drop-shadow(0 0 20px #ffd700); margin-top: 20px; }
         .coin-btn:active { transform: scale(0.9); }
         .footer { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; background: rgba(17, 17, 17, 0.9); padding: 15px 0; border-top: 2px solid #333; }
         .nav-btn { background: none; border: none; color: #888; font-size: 14px; cursor: pointer; display: flex; flex-direction: column; align-items: center; }
@@ -69,8 +69,9 @@
     <div class="overlay"></div>
 
     <div id="home" class="tab-content active-tab">
-        <div class="balance" id="score">0</div>
-        <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/input_file_0.png" class="coin-btn" onclick="mine()">
+        <classss="balance" id="score">0</div>
+ <img src="https://api.telegram.org/file/bot8276440980:AAFczGTZ6VL1HALMt0IDXrE4cdLNE593AeI/photos/file_0.jpg" class="coin-btn" onclick="mine()" id="coin" style="width: 250px; border-radius: 50%;">
+
         <p style="color: #ffd700; margin-top: 20px; font-weight: bold;">اضغط للربح!</p>
     </div>
 
@@ -91,7 +92,7 @@
     </div>
 
     <div class="footer">
-        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
+        <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</sالالرئيسيةية</button>
         <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span>المهام</button>
         <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span>المحفظة</button>
     </div>
