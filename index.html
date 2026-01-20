@@ -4,174 +4,993 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitco93 - Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* إصلاح ظهور الخلفية */
-        body { 
-            background-color: #000; /* لون احتياطي */
-            background-image: url('https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/1000500633.png');
+        /* متغيرات الألوان */
+        :root {
+            --primary: #FFD700;
+            --primary-dark: #E6C200;
+            --secondary: #6C63FF;
+            --dark: #0A0A0F;
+            --dark-light: #1A1A2E;
+            --light: #F5F5F5;
+            --danger: #FF4757;
+            --success: #2ED573;
+        }
+
+        /* تهيئة عامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: var(--dark);
+            background-image: url('https://i.ibb.co/NMGSj3p/1770381769606.jpg');
             background-repeat: no-repeat;
-            background-position: center center;
+            background-position: center;
             background-attachment: fixed;
             background-size: cover;
-            color: white; 
-            text-align: center; 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
+            color: var(--light);
+            font-family: 'Segoe UI', 'Cairo', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
         }
 
-        /* طبقة حماية لضمان وضوح النصوص */
+        /* طبقة التعتيم */
         .overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4); z-index: -1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 15, 0.85);
+            z-index: -1;
         }
 
-        .content-area { flex: 1; display: flex; justify-content: center; align-items: center; width: 100%; padding-bottom: 90px; overflow-y: auto; z-index: 1; }
-        .tab-content { display: none; width: 100%; flex-direction: column; align-items: center; padding: 20px 0; }
-        .active-tab { display: flex; }
+        /* رسالة الترحيب */
+        #welcome-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 10000;
+            animation: fadeOut 1.5s ease 2.5s forwards;
+        }
+
+        .welcome-box {
+            text-align: center;
+            padding: 30px;
+            background: rgba(26, 26, 46, 0.9);
+            border-radius: 20px;
+            border: 3px solid var(--primary);
+            box-shadow: 0 0 50px var(--primary);
+            max-width: 90%;
+            animation: pulse 2s infinite, slideUp 0.8s ease;
+        }
+
+        .welcome-box h1 {
+            color: var(--primary);
+            font-size: 2.8rem;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.7);
+        }
+
+        .welcome-box p {
+            font-size: 1.2rem;
+            color: #aaa;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 215, 0, 0.3);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            margin-top: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        /* منطقة المحتوى */
+        .content-area {
+            min-height: 100vh;
+            padding: 20px 15px 100px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            opacity: 0;
+            animation: fadeIn 0.8s ease 3s forwards;
+        }
+
+        /* علامات التبويب */
+        .tab-content {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .active-tab {
+            display: flex;
+        }
+
+        /* الخانة الرئيسية - Home */
+        #home {
+            position: relative;
+        }
+
+        .user-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            border: 3px solid var(--light);
+        }
+
+        .level-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .level-bar {
+            width: 150px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .level-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            width: 45%;
+            border-radius: 10px;
+        }
+
+        /* منطقة النقر */
+        .tap-area {
+            position: relative;
+            margin: 30px 0;
+        }
+
+        .tap-coin {
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 25px var(--primary));
+            transition: all 0.1s;
+            animation: float 3s ease-in-out infinite;
+            background-image: url('https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .tap-coin:active {
+            transform: scale(0.88);
+            filter: drop-shadow(0 0 35px var(--primary));
+        }
+
+        /* تأثيرات النقر */
+        .tap-effect {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            pointer-events: none;
+            background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
+            background-size: contain;
+            opacity: 0;
+            animation: floatUp 0.8s ease-out forwards;
+        }
 
         /* البطارية */
-        .battery-container { width: 200px; height: 30px; background: rgba(50, 50, 50, 0.9); border: 2px solid #ffd700; border-radius: 12px; position: relative; margin: 20px auto; overflow: hidden; }
-        .battery-fill { height: 100%; background: linear-gradient(90deg, #ffd700, #fff); width: 100%; transition: width 0.3s ease; }
-        .battery-text { position: absolute; width: 100%; top: 0; left: 0; line-height: 30px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; }
-
-        /* العجلة */
-        .wheel-box { position: relative; width: 260px; height: 260px; margin: 15px auto; }
-        #wheel { 
-            width: 100%; height: 100%; border-radius: 50%; border: 5px solid #ffd700; position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow: hidden;
-            background: conic-gradient(#f9f9f9 0deg 45deg, #e3f2fd 45deg 90deg, #f1f8e9 90deg 135deg, #fff3e0 135deg 180deg, #fce4ec 180deg 225deg, #f3e5f5 225deg 270deg, #efebe9 270deg 315deg, #eeeeee 315deg 360deg);
+        .battery-container {
+            width: 90%;
+            max-width: 300px;
+            height: 40px;
+            background: rgba(50, 50, 70, 0.7);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            position: relative;
+            margin: 20px auto;
+            overflow: hidden;
         }
-        .num { position: absolute; width: 100%; height: 100%; transform: rotate(calc(45deg * var(--i))); text-align: center; font-weight: 900; font-size: 20px; color: #000; padding-top: 15px; box-sizing: border-box; }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #ffd700; z-index: 10; }
 
-        /* القائمة السفلية (7 خانات) */
-        .footer { width: 100%; display: flex; justify-content: space-around; background: rgba(10, 10, 10, 0.95); padding: 10px 0; border-top: 2px solid #ffd700; position: fixed; bottom: 0; z-index: 1000; }
-        .nav-btn { background: none; border: none; color: #888; font-size: 8px; display: flex; flex-direction: column; align-items: center; flex: 1; cursor: pointer; }
-        .nav-btn.active { color: #ffd700; font-weight: bold; }
-        .nav-btn span { font-size: 18px; margin-bottom: 2px; }
+        .battery-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #FFEE58);
+            width: 100%;
+            border-radius: 18px;
+            transition: width 0.5s ease;
+        }
 
-        .card { background: rgba(30, 30, 30, 0.9); border-radius: 15px; width: 90%; padding: 15px; border: 1px solid #ffd700; margin-top: 10px; }
-        .btn-action { background: #ffd700; color: #000; border: none; padding: 12px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .mine-btn { width: 220px; cursor: pointer; transition: 0.1s; filter: drop-shadow(0 0 10px #ffd700); }
-        .mine-btn:active { transform: scale(0.92); }
+        .battery-text {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--light);
+            text-shadow: 1px 1px 3px #000;
+            font-size: 1.1rem;
+        }
+
+        /* عجلة الحظ - Lucky Wheel */
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 30px auto;
+        }
+
+        #wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            background: conic-gradient(
+                #FF5252 0deg 45deg,
+                #FF9800 45deg 90deg,
+                #FFEB3B 90deg 135deg,
+                #4CAF50 135deg 180deg,
+                #2196F3 180deg 225deg,
+                #9C27B0 225deg 270deg,
+                #E91E63 270deg 315deg,
+                #00BCD4 315deg 360deg
+            );
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5), inset 0 0 30px rgba(255, 255, 255, 0.1);
+            border: 8px solid var(--primary);
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            left: 0;
+            top: 0;
+            transform: rotate(calc(45deg * var(--i)));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .wheel-value {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.4rem;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            left: 15px;
+            top: 15px;
+            transform: rotate(calc(-45deg * var(--i)));
+        }
+
+        .wheel-center {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background: var(--primary);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #000;
+            border: 8px solid var(--dark);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid var(--primary);
+            z-index: 10;
+            filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
+        }
+
+        /* الألعاب - Games */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .game-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--primary);
+        }
+
+        .game-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            color: var(--light);
+        }
+
+        .game-score {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .tap-btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #000;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: all 0.2s;
+        }
+
+        .tap-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* الأصدقاء - Friends */
+        .friends-list {
+            width: 100%;
+            max-width: 500px;
+            margin-top: 20px;
+        }
+
+        .friend-item {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .friend-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--primary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-left: 15px;
+        }
+
+        .friend-info {
+            flex: 1;
+        }
+
+        .friend-name {
+            font-weight: bold;
+            color: var(--light);
+        }
+
+        .friend-status {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        /* المهام - Tasks */
+        .tasks-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .task-item {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .task-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: rgba(255, 215, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .task-details h3 {
+            color: var(--light);
+            margin-bottom: 5px;
+        }
+
+        .task-details p {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        .task-reward {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        /* المحفظة - Wallet */
+        .wallet-card {
+            background: rgba(26, 26, 46, 0.8);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            max-width: 400px;
+            margin: 50px auto;
+            border: 3px dashed var(--primary);
+        }
+
+        .wallet-icon {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .coming-soon {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* الإعدادات - Settings */
+        .settings-container {
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .setting-group {
+            background: rgba(26, 26, 46, 0.7);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .setting-title {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .lang-btn {
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: var(--primary);
+            color: #000;
+            border-color: var(--primary);
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 30px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 4px;
+            bottom: 4px;
+            background-color: var(--light);
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+        /* القائمة السفلية */
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 0;
+            border-top: 2px solid var(--primary);
+            z-index: 1000;
+            box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            cursor: pointer;
+            padding: 8px 5px;
+            border-radius: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 215, 0, 0.1);
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+            font-weight: bold;
+            transform: translateY(-5px);
+        }
+
+        .nav-btn span {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        /* الرسائل العائمة */
+        .floating-notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.95);
+            border-left: 5px solid var(--primary);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            transform: translateX(120%);
+            transition: transform 0.5s ease;
+        }
+
+        .floating-notification.show {
+            transform: translateX(0);
+        }
+
+        /* الأنيميشنات */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; visibility: hidden; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 50px var(--primary); }
+            50% { transform: scale(1.03); box-shadow: 0 0 70px var(--primary); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.5); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes coinBounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* تأثيرات صوتية مرئية */
+        .sound-wave {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid var(--primary);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            animation: wave 1s ease-out;
+        }
+
+        @keyframes wave {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
+        }
+
+        /* تصميم متجاوب */
+        @media (max-width: 768px) {
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .wheel-container {
+                width: 280px;
+                height: 280px;
+            }
+            
+            .welcome-box h1 {
+                font-size: 2rem;
+            }
+            
+            .tap-coin {
+                width: 180px;
+                height: 180px;
+            }
+        }
     </style>
 </head>
 <body>
 
+<!-- رسالة الترحيب -->
+<div id="welcome-overlay">
+    <div class="welcome-box">
+        <h1 id="welcome-message">أهلاً بك في بوت Bitco93</h1>
+        <p>جاري تحميل البوت الاحترافي...</p>
+        <div class="loader"></div>
+    </div>
+</div>
+
 <div class="overlay"></div>
 
+<!-- الإشعارات العائمة -->
+<div id="notification" class="floating-notification">
+    <div id="notification-text"></div>
+</div>
+
+<!-- منطقة المحتوى -->
 <div class="content-area">
+    
+    <!-- الخانة الرئيسية -->
     <div id="home" class="tab-content active-tab">
-        <div id="mining-section" style="display: none;">
-            <h1 id="score" style="font-size: 60px; color: #ffd700;">0</h1>
-            <img src="https://raw.githubusercontent.com/mhmdyasrshrfthabt-max/Bitco93-Bot/main/20de4ce6-991a-4d51-8c7b-587442cab07c.png" class="mine-btn" onclick="mine()">
-            <div class="battery-container">
-                <div class="battery-fill" id="energy-bar"></div>
-                <div class="battery-text"><span id="energy-val">130</span> / 130 ⚡</div>
+        <div class="user-header">
+            <div class="user-info">
+                <div class="user-avatar">B93</div>
+                <div class="level-info">
+                    <h3>المستوى <span id="user-level">12</span></h3>
+                    <div class="level-bar">
+                        <div class="level-fill" id="level-fill"></div>
+                    </div>
+                    <p><span id="current-xp">450</span>/<span id="max-xp">1000</span> XP</p>
+                </div>
+            </div>
+            <div class="user-score">
+                <h2 style="color: var(--primary); font-size: 2rem;" id="score">0</h2>
+                <p style="color: #aaa;">النقاط</p>
             </div>
         </div>
-        <div id="lock-screen">
-            <div class="card">
-                <h2>⚠️ التعدين مغلق</h2>
-                <p>اشترك في القناة لفتح البوت.</p>
-                <button class="btn-action" onclick="showTab('tasks', document.querySelectorAll('.nav-btn')[4])">الذهاب للمهام</button>
-            </div>
+
+        <div class="tap-area" id="tap-area">
+            <div class="tap-coin" onclick="tapCoin()"></div>
+        </div>
+
+        <div class="battery-container">
+            <div class="battery-fill" id="energy-bar"></div>
+            <div class="battery-text"><span id="energy-val">130</span> / 130 ⚡</div>
+        </div>
+
+        <div style="margin-top: 30px; text-align: center; color: #aaa;">
+            <p>انقر على العملة لجمع النقاط! كل نقرة = <span style="color: var(--primary);">+1</span></p>
+            <p>معدل النقر: <span id="tap-rate">1</span> نقرة/ثانية</p>
         </div>
     </div>
 
+    <!-- عجلة الحظ -->
     <div id="spin" class="tab-content">
-        <h2>🎡 العجلة</h2>
-        <div class="wheel-box">
-            <div class="pointer"></div>
+        <h2 style="color: var(--primary); margin-bottom: 10px;">🎡 عجلة الحظ</h2>
+        <p style="color: #aaa; margin-bottom: 20px;">لديك <span id="spins-left" style="color: var(--primary); font-weight: bold;">0</span> محاولة متبقية</p>
+        
+        <div class="wheel-container">
+            <div class="wheel-pointer"></div>
             <div id="wheel">
-                <div class="num" style="--i:0;">50</div><div class="num" style="--i:1;">20</div>
-                <div class="num" style="--i:2;">10</div><div class="num" style="--i:3;">5</div>
-                <div class="num" style="--i:4;">0</div><div class="num" style="--i:5;">100</div>
-                <div class="num" style="--i:6;">75</div><div class="num" style="--i:7;">80</div>
+                <!-- يتم إضافة الأقسام برمجياً -->
+            </div>
+            <div class="wheel-center">🎁</div>
+        </div>
+        
+        <button onclick="startSpin()" id="spin-btn" class="tap-btn" style="width: 200px; margin-top: 30px;" disabled>تدوير العجلة</button>
+        <p style="color: #aaa; margin-top: 15px; font-size: 0.9rem;">كل إحالة = محاولة تدوير إضافية</p>
+    </div>
+
+    <!-- الألعاب -->
+    <div id="games" class="tab-content">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">🎮 ألعاب النقر</h2>
+        <p style="color: #aaa; text-align: center; margin-bottom: 20px;">انقر بسرعة لجمع النقاط في كل لعبة</p>
+        
+        <div class="games-grid">
+            <div class="game-card" id="game1">
+                <div class="game-icon">👾</div>
+                <div class="game-title">وحش النقر</div>
+                <div class="game-score" id="game1-score">0</div>
+                <button class="tap-btn" onclick="tapGame(1)">انقر هنا!</button>
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">الرقم القياسي: <span id="game1-high">0</span></p>
+            </div>
+            
+            <div class="game-card" id="game2">
+                <div class="game-icon">⚡</div>
+                <div class="game-title">سباق النقر</div>
+                <div class="game-score" id="game2-score">0</div>
+                <button class="tap-btn" onclick="tapGame(2)">انقر هنا!</button>
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">الوقت المتبقي: <span id="game2-time">30</span> ثانية</p>
+            </div>
+            
+            <div class="game-card" id="game3">
+                <div class="game-icon">🎯</div>
+                <div class="game-title">دقة النقر</div>
+                <div class="game-score" id="game3-score">0</div>
+                <button class="tap-btn" onclick="tapGame(3)">انقر هنا!</button>
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">الدقة: <span id="game3-accuracy">0%</span></p>
+            </div>
+            
+            <div class="game-card" id="game4">
+                <div class="game-icon">🏆</div>
+                <div class="game-title">تحدي النقر</div>
+                <div class="game-score" id="game4-score">0</div>
+                <button class="tap-btn" onclick="tapGame(4)">انقر هنا!</button>
+                <p style="font-size: 0.8rem; color: #aaa; margin-top: 10px;">المستوى: <span id="game4-level">1</span></p>
             </div>
         </div>
-        <button onclick="startSpin()" id="spin-btn" class="btn-action" disabled>تدوير (المحاولات: <span id="spins-left">0</span>)</button>
     </div>
 
-    <div id="games" class="tab-content"><h2>🎮 ألعاب</h2><div class="card">قريباً</div></div>
+    <!-- الأصدقاء -->
     <div id="friends" class="tab-content">
-        <div class="card">
-            <h2>👥 الأصدقاء</h2>
-            <h3>الإحالات: <span id="ref-count">0</span></h3>
-            <button onclick="copyInvite()" class="btn-action">نسخ الرابط</button>
+        <h2 style="color: var(--primary); margin-bottom: 10px;">👥 نظام الأصدقاء</h2>
+        <p style="color: #aaa; text-align: center; margin-bottom: 20px;">ادع أصدقاءك واحصل على مكافآت مجانية</p>
+        
+        <div class="card" style="width: 100%; max-width: 500px; margin-bottom: 20px;">
+            <h3 style="color: var(--light); margin-bottom: 10px;">إحالاتك: <span id="ref-count" style="color: var(--primary);">0</span></h3>
+            <p style="color: #aaa; margin-bottom: 15px;">شارك هذا الرابط مع أصدقائك:</p>
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <input type="text" id="ref-link" value="https://t.me/Bitco93_bot?start=ref123" readonly style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.3); color: white;">
+                <button onclick="copyRefLink()" class="tap-btn" style="width: auto; padding: 10px 20px;">نسخ</button>
+            </div>
+            <p style="color: var(--success); font-size: 0.9rem;">كل إحالة = +50 نقطة + محاولة عجلة</p>
+        </div>
+        
+        <h3 style="color: var(--light); margin: 25px 0 15px;">أصدقاؤك (<span id="friends-count">0</span>)</h3>
+        <div class="friends-list" id="friends-list">
+            <!-- يتم إضافة الأصدقاء برمجياً -->
         </div>
     </div>
+
+    <!-- المهام -->
     <div id="tasks" class="tab-content">
-        <div class="card">
-            <h2>💰 المهام</h2>
-            <p>انضم لقناتنا الرسمية:</p>
-            <a href="https://t.me/Bitco93_Bot_Channel" target="_blank" style="color:#ffd700;">Bitco93 Channel 🚀</a>
-            <button onclick="verifySub()" class="btn-action">تحقق لفتح التعدين</button>
+        <h2 style="color: var(--primary); margin-bottom: 10px;">💰 المهام اليومية</h2>
+        <p style="color: #aaa; text-align: center; margin-bottom: 20px;">أكمل المهام لتحصل على نقاط إضافية</p>
+        
+        <div class="tasks-container">
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-icon">📺</div>
+                    <div class="task-details">
+                        <h3>اشترك في قناتنا</h3>
+                        <p>اشترك في قناة التليجرام الرسمية</p>
+                    </div>
+                </div>
+                <div class="task-reward">+100</div>
+            </div>
+            
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-icon">🔗</div>
+                    <div class="task-details">
+                        <h3>زر الرابط 1</h3>
+                        <p>قم بزيارة هذا الرابط للمتابعة</p>
+                    </div>
+                </div>
+                <div class="task-reward">+50</div>
+            </div>
+            
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-icon">🔗</div>
+                    <div class="task-details">
+                        <h3>زر الرابط 2</h3>
+                        <p>قم بزيارة هذا الرابط للمتابعة</p>
+                    </div>
+                </div>
+                <div class="task-reward">+50</div>
+            </div>
+            
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-icon">🎮</div>
+                    <div class="task-details">
+                        <h3>العب 10 دقائق</h3>
+                        <p>العب في أي لعبة لمدة 10 دقائق</p>
+                    </div>
+                </div>
+                <div class="task-reward">+200</div>
+            </div>
+            
+            <div class="task-item">
+                <div class="task-info">
+                    <div class="task-icon">👥</div>
+                    <div class="task-details">
+                        <h3>أحضر صديقاً</h3>
+                        <p>ادع صديقاً واحداً على الأقل</p>
+                    </div>
+                </div>
+                <div class="task-reward">+500</div>
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <p style="color: #aaa;">المهام المكتملة: <span id="tasks-completed">0</span>/5</p>
+            <button class="tap-btn" onclick="claimAllTasks()" style="width: 200px;">استلام جميع المكافآت</button>
         </div>
     </div>
-    <div id="wallet" class="tab-content"><h2>👛 المحفظة</h2><div class="card">الرصيد: <span id="wallet-balance">0</span></div></div>
-    <div id="settings" class="tab-content"><h2>⚙️ الإعدادات</h2><div class="card"><select><option>العربية</option><option>English</option></select></div></div>
-</div>
 
-<div class="footer">
-    <button class="nav-btn active" onclick="showTab('home', this)"><span>🏠</span>الرئيسية</button>
-    <button class="nav-btn" onclick="showTab('spin', this)"><span>🎡</span>العجلة</button>
-    <button class="nav-btn" onclick="showTab('games', this)"><span>🎮</span>ألعاب</button>
-    <button class="nav-btn" onclick="showTab('friends', this)"><span>👥</span>الأصدقاء</button>
-    <button class="nav-btn" onclick="showTab('tasks', this)"><span>💰</span>المهام</button>
-    <button class="nav-btn" onclick="showTab('wallet', this)"><span>👛</span>المحفظة</button>
-    <button class="nav-btn" onclick="showTab('settings', this)"><span>⚙️</span>الإعدادات</button>
-</div>
-
-<script>
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let energy = 130;
-    let refs = parseInt(localStorage.getItem('refs')) || 0;
-    let usedSpins = parseInt(localStorage.getItem('usedSpins')) || 0;
-    let isSubscribed = localStorage.getItem('isSubscribed') === 'true';
-    const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
-
-    function updateUI() {
-        document.getElementById('score').innerText = score;
-        document.getElementById('wallet-balance').innerText = score;
-        document.getElementById('ref-count').innerText = refs;
-        document.getElementById('energy-val').innerText = energy;
-        document.getElementById('energy-bar').style.width = (energy / 130 * 100) + "%";
-        let av = refs - usedSpins;
-        document.getElementById('spins-left').innerText = av;
-        document.getElementById('spin-btn').disabled = (av <= 0);
-        if (isSubscribed) {
-            document.getElementById('mining-section').style.display = 'block';
-            document.getElementById('lock-screen').style.display = 'none';
-        }
-    }
-
-    function mine() { if(isSubscribed && energy > 0) { score++; energy--; updateUI(); localStorage.setItem('score', score); } }
-    function verifySub() { isSubscribed = true; localStorage.setItem('isSubscribed', 'true'); updateUI(); showTab('home', document.querySelectorAll('.nav-btn')[0]); }
-    function copyInvite() { navigator.clipboard.writeText("https://t.me/Bitco93_bot?start=" + Math.random()); alert("تم النسخ!"); }
-    function startSpin() {
-        if((refs - usedSpins) <= 0) return;
-        usedSpins++; localStorage.setItem('usedSpins', usedSpins);
-        const wheel = document.getElementById('wheel');
-        const deg = 3600 + (Math.floor(Math.random() * 8) * 45);
-        wheel.style.transform = `rotate(${deg}deg)`;
-        setTimeout(() => {
-            const idx = Math.floor(((360 - (deg % 360)) % 360) / 45);
-            score += rewards[idx]; updateUI();
-        }, 4000);
-    }
-    function showTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(id).style.display = 'flex';
-        btn.classList.add('active');
-    }
-    setInterval(() => { if (energy < 130) { energy++; updateUI(); } }, 3000);
-    updateUI();
-</script>
-</body>
-</html>
+    <!-- المحفظة -->
+    <div id="wallet" class="tab-content">
+        <div class="wallet-card">
+            <div class="wallet-icon">👛</div>
+            <div class="coming-soon">قريباً</div>
+            <p style="color: #aaa; font-size: 1.2rem; margin-bottom: 30px;">نحن نعمل على تطوير نظام محفظة متكامل</p>
+            <p style="color: var(--primary);">ستكون متاحة قريباً مع إمكانية سحب الأرباح!</p>
+        </div>
+        
+        <div style="text-align: center; color: #aaa; max-width: 400px; margin: 0 auto;">
+            <h3 style="color: var(--light); margin-bottom: 15px;">الميزات القادمة</h3>
+            <div style
