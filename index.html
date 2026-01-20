@@ -6,7 +6,6 @@
     <title>Bitco93 - Pro</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* متغيرات الألوان */
         :root {
             --primary: #FFD700;
             --primary-dark: #E6C200;
@@ -18,7 +17,6 @@
             --success: #2ED573;
         }
 
-        /* تهيئة عامة */
         * {
             margin: 0;
             padding: 0;
@@ -40,7 +38,6 @@
             position: relative;
         }
 
-        /* طبقة التعتيم */
         .overlay {
             position: fixed;
             top: 0;
@@ -51,7 +48,6 @@
             z-index: -1;
         }
 
-        /* رسالة الترحيب */
         #welcome-overlay {
             position: fixed;
             top: 0;
@@ -100,7 +96,6 @@
             animation: spin 1s linear infinite;
         }
 
-        /* منطقة المحتوى */
         .content-area {
             min-height: 100vh;
             padding: 20px 15px 100px;
@@ -111,7 +106,6 @@
             animation: fadeIn 0.8s ease 3s forwards;
         }
 
-        /* علامات التبويب */
         .tab-content {
             display: none;
             width: 100%;
@@ -119,15 +113,11 @@
             flex-direction: column;
             align-items: center;
             padding: 15px 0;
+            min-height: 60vh;
         }
 
         .active-tab {
-            display: flex;
-        }
-
-        /* الخانة الرئيسية - Home */
-        #home {
-            position: relative;
+            display: flex !important;
         }
 
         .user-header {
@@ -182,7 +172,6 @@
             border-radius: 10px;
         }
 
-        /* منطقة النقر */
         .tap-area {
             position: relative;
             margin: 30px 0;
@@ -206,7 +195,6 @@
             filter: drop-shadow(0 0 35px var(--primary));
         }
 
-        /* تأثيرات النقر */
         .tap-effect {
             position: absolute;
             width: 30px;
@@ -218,7 +206,6 @@
             animation: floatUp 0.8s ease-out forwards;
         }
 
-        /* البطارية */
         .battery-container {
             width: 90%;
             max-width: 300px;
@@ -252,7 +239,6 @@
             font-size: 1.1rem;
         }
 
-        /* عجلة الحظ - Lucky Wheel */
         .wheel-container {
             position: relative;
             width: 320px;
@@ -346,7 +332,6 @@
             filter: drop-shadow(0 5px 5px rgba(0, 0, 0, 0.5));
         }
 
-        /* الألعاب - Games */
         .games-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -409,7 +394,6 @@
             transform: scale(0.95);
         }
 
-        /* الأصدقاء - Friends */
         .friends-list {
             width: 100%;
             max-width: 500px;
@@ -452,7 +436,6 @@
             color: #aaa;
         }
 
-        /* المهام - Tasks */
         .tasks-container {
             width: 100%;
             max-width: 500px;
@@ -507,7 +490,6 @@
             text-align: center;
         }
 
-        /* المحفظة - Wallet */
         .wallet-card {
             background: rgba(26, 26, 46, 0.8);
             border-radius: 20px;
@@ -533,7 +515,6 @@
             text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        /* الإعدادات - Settings */
         .settings-container {
             width: 100%;
             max-width: 500px;
@@ -585,10 +566,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .setting-item:last-child {
-            border-bottom: none;
-        }
-
         .switch {
             position: relative;
             display: inline-block;
@@ -634,7 +611,6 @@
             transform: translateX(30px);
         }
 
-        /* القائمة السفلية */
         .footer {
             position: fixed;
             bottom: 0;
@@ -680,7 +656,6 @@
             margin-bottom: 5px;
         }
 
-        /* الرسائل العائمة */
         .floating-notification {
             position: fixed;
             top: 20px;
@@ -699,7 +674,6 @@
             transform: translateX(0);
         }
 
-        /* الأنيميشنات */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -735,31 +709,11 @@
             100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
         }
 
-        @keyframes coinBounce {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        /* تأثيرات صوتية مرئية */
-        .sound-wave {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 3px solid var(--primary);
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0;
-            animation: wave 1s ease-out;
-        }
-
         @keyframes wave {
             0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
             100% { transform: translate(-50%, -50%) scale(2); opacity: 0; }
         }
 
-        /* تصميم متجاوب */
         @media (max-width: 768px) {
             .games-grid {
                 grid-template-columns: 1fr;
@@ -783,7 +737,6 @@
 </head>
 <body>
 
-<!-- رسالة الترحيب -->
 <div id="welcome-overlay">
     <div class="welcome-box">
         <h1 id="welcome-message">أهلاً بك في بوت Bitco93</h1>
@@ -794,12 +747,10 @@
 
 <div class="overlay"></div>
 
-<!-- الإشعارات العائمة -->
 <div id="notification" class="floating-notification">
     <div id="notification-text"></div>
 </div>
 
-<!-- منطقة المحتوى -->
 <div class="content-area">
     
     <!-- الخانة الرئيسية -->
@@ -898,7 +849,7 @@
         <h2 style="color: var(--primary); margin-bottom: 10px;">👥 نظام الأصدقاء</h2>
         <p style="color: #aaa; text-align: center; margin-bottom: 20px;">ادع أصدقاءك واحصل على مكافآت مجانية</p>
         
-        <div class="card" style="width: 100%; max-width: 500px; margin-bottom: 20px;">
+        <div style="width: 100%; max-width: 500px; margin-bottom: 20px; background: rgba(26,26,46,0.7); padding: 20px; border-radius: 15px;">
             <h3 style="color: var(--light); margin-bottom: 10px;">إحالاتك: <span id="ref-count" style="color: var(--primary);">0</span></h3>
             <p style="color: #aaa; margin-bottom: 15px;">شارك هذا الرابط مع أصدقائك:</p>
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
@@ -993,4 +944,22 @@
         
         <div style="text-align: center; color: #aaa; max-width: 400px; margin: 0 auto;">
             <h3 style="color: var(--light); margin-bottom: 15px;">الميزات القادمة</h3>
-            <div style
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                <div style="background: rgba(255,215,0,0.1); padding: 10px; border-radius: 8px; min-width: 120px;">
+                    <div style="color: var(--primary); font-weight: bold;">💰 سحب الأرباح</div>
+                    <div style="font-size: 0.8rem;">PayPal, بايونير</div>
+                </div>
+                <div style="background: rgba(255,215,0,0.1); padding: 10px; border-radius: 8px; min-width: 120px;">
+                    <div style="color: var(--primary); font-weight: bold;">📊 إحصائيات متقدمة</div>
+                    <div style="font-size: 0.8rem;">تحليل الأرباح</div>
+                </div>
+                <div style="background: rgba(255,215,0,0.1); padding: 10px; border-radius: 8px; min-width: 120px;">
+                    <div style="color: var(--primary); font-weight: bold;">🔄 تحويل العملات</div>
+                    <div style="font-size: 0.8rem;">USD, EUR, BTC</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الإعدادات -->
+    <div id="settings" class="
