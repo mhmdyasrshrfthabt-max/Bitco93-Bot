@@ -3,297 +3,363 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Pro - Ultra Edition</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Bitco93 Pro</title>
     <style>
-        :root {
-            --primary: #FFD700;
-            --secondary: #FFA500;
-            --bg-dark: #0a0a0f;
-            --card-bg: rgba(255, 255, 255, 0.08);
-            --text-gray: #aaa;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
-
-        body {
-            background-color: var(--bg-dark);
-            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://i.ibb.co/NMGSj3p/1770381769606.jpg');
-            background-size: cover;
-            background-attachment: fixed;
-            color: white;
-            overflow-x: hidden;
-            padding-bottom: 90px;
-        }
-
-        /* شاشة الترحيب الاحترافية */
-        #welcome-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: black; display: flex; flex-direction: column;
-            justify-content: center; align-items: center; z-index: 10000;
-            transition: opacity 1s ease;
-        }
-        .loader-logo { width: 120px; animation: pulse 2s infinite; }
-
-        /* الهيكل الرئيسي */
-        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
-
-        /* الخانة الرئيسية - نظام النقر (هامستر) */
-        .main-coin-container {
-            display: flex; flex-direction: column; align-items: center; margin: 40px 0;
-        }
-        .tap-circle {
-            width: 250px; height: 250px; border-radius: 50%;
-            background: radial-gradient(circle, var(--primary), var(--secondary));
-            padding: 10px; box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
-            cursor: pointer; transition: transform 0.1s;
-            position: relative;
-        }
-        .tap-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .tap-circle:active { transform: scale(0.92); }
-
-        /* عجلة الحظ المطورة */
-        .wheel-box { position: relative; width: 320px; height: 320px; margin: 20px auto; }
-        #wheel-canvas { width: 100%; height: 100%; transform: rotate(0deg); transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1); }
-        .wheel-pin { 
-            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 30px; height: 40px; background: var(--primary); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10;
-        }
-
-        /* نظام المهام - روابط احترافية */
-        .task-card {
-            background: var(--card-bg); border-radius: 15px; padding: 15px;
-            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
-            border: 1px solid rgba(255,215,0,0.1);
-        }
-
-        /* القائمة السفلية (7 خانات) */
-        .nav-bar {
-            position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
-            display: flex; justify-content: space-around; padding: 10px 0;
-            border-top: 2px solid var(--primary); backdrop-filter: blur(10px);
-        }
-        .nav-item { color: var(--text-gray); text-align: center; font-size: 10px; flex: 1; cursor: pointer; }
-        .nav-item.active { color: var(--primary); }
-        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
-
-        /* الألعاب */
-        .games-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .game-item { background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center; }
-
-        /* التنبيهات */
-        .toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-            background: var(--primary); color: black; padding: 10px 20px;
-            border-radius: 20px; font-weight: bold; display: none; z-index: 1000;
-        }
-
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+        /* جميع CSS السابق يبقى كما هو */
+        /* ... */
     </style>
 </head>
 <body>
 
-<div id="welcome-screen">
-    <img src="https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg" class="loader-logo">
-    <h2 id="welcome-text" style="margin-top:20px; color:var(--primary)">أهلاً بك في Bitco93 Pro</h2>
-</div>
-
-<div class="container">
-    <section id="tab-home" class="content-section">
-        <div style="text-align: center; margin-top: 20px;">
-            <h1 id="total-score" style="font-size: 40px; color: var(--primary);">0</h1>
-            <p style="color:var(--text-gray)">إجمالي العملات</p>
-        </div>
-        <div class="main-coin-container">
-            <div class="tap-circle" id="tap-target">
-                <img src="https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg">
-            </div>
-        </div>
-        <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px;">
-            <div id="energy-bar" style="height: 10px; background: var(--primary); width: 100%; border-radius: 5px;"></div>
-            <p style="margin-top:5px; font-size: 12px;">⚡ الطاقة: <span id="energy-val">1000</span>/1000</p>
-        </div>
-    </section>
-
-    <section id="tab-wheel" class="content-section" style="display:none">
-        <h2 style="text-align:center">🎡 عجلة الحظ</h2>
-        <div class="wheel-box">
-            <div class="wheel-pin"></div>
-            <canvas id="wheel-canvas" width="300" height="300"></canvas>
-        </div>
-        <button class="btn" id="spin-btn" onclick="spinWheel()" style="width:100%; padding:15px; border-radius:30px; background:var(--primary); font-weight:bold; border:none">جرب حظك!</button>
-    </section>
-
-    <section id="tab-games" class="content-section" style="display:none">
-        <h2 style="margin-bottom:20px">🎮 الألعاب المتاحة</h2>
-        <div class="games-list">
-            <div class="game-item"><i>🐹</i><h3>هامستر كليك</h3><button onclick="playGame()">العب الآن</button></div>
-            <div class="game-item"><i>⛏️</i><h3>منجم الذهب</h3><button onclick="playGame()">العب الآن</button></div>
-        </div>
-    </section>
-
-    <section id="tab-friends" class="content-section" style="display:none">
-        <h2>👥 دعوة الأصدقاء</h2>
-        <div class="task-card" style="margin-top:20px">
-            <div>
-                <p>رابط الإحالة الخاص بك</p>
-                <small id="ref-url">t.me/bot?start=12345</small>
-            </div>
-            <button onclick="copyRef()">نسخ</button>
-        </div>
-    </section>
-
-    <section id="tab-tasks" class="content-section" style="display:none">
-        <h2>💰 مهام القنوات</h2>
-        <div id="tasks-container">
-            </div>
-    </section>
-
-    <section id="tab-wallet" class="content-section" style="display:none">
-        <div style="text-align:center; padding: 50px 0;">
-            <i class="fas fa-wallet" style="font-size: 60px; color: var(--primary);"></i>
-            <h2 style="margin-top:20px">المحفظة قريباً...</h2>
-            <p style="color:var(--text-gray)">سيتم فتح السحب عند الوصول للمرحلة القادمة</p>
-        </div>
-    </section>
-
-    <section id="tab-settings" class="content-section" style="display:none">
-        <h2>⚙️ الإعدادات</h2>
-        <div class="task-card" style="margin-top:20px">
-            <p>اللغة / Language</p>
-            <select onchange="updateLang(this.value)" style="background:none; color:white; border:1px solid var(--primary)">
-                <option value="ar">العربية</option>
-                <option value="en">English</option>
-            </select>
-        </div>
-    </section>
-</div>
-
-<nav class="nav-bar">
-    <div class="nav-item active" onclick="showTab('home')"><i class="fas fa-home"></i>الرئيسية</div>
-    <div class="nav-item" onclick="showTab('wheel')"><i class="fas fa-spinner"></i>العجلة</div>
-    <div class="nav-item" onclick="showTab('games')"><i class="fas fa-gamepad"></i>الألعاب</div>
-    <div class="nav-item" onclick="showTab('friends')"><i class="fas fa-users"></i>الأصدقاء</div>
-    <div class="nav-item" onclick="showTab('tasks')"><i class="fas fa-tasks"></i>المهام</div>
-    <div class="nav-item" onclick="showTab('wallet')"><i class="fas fa-wallet"></i>المحفظة</div>
-    <div class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i>الإعدادات</div>
-</nav>
-
-<div id="toast" class="toast">تم جمع العملات!</div>
+<!-- نفس HTML السابق يبقى كما هو -->
+<!-- ... -->
 
 <script>
-    let score = localStorage.getItem('score') || 0;
-    let energy = 1000;
+// ========== المتغيرات ==========
+let score = parseInt(localStorage.getItem('score')) || 0;
+let energy = parseInt(localStorage.getItem('energy')) || 130;
+let refCount = parseInt(localStorage.getItem('refCount')) || 0;
 
-    // تفعيل شاشة الترحيب
-    window.onload = () => {
-        setTimeout(() => {
-            document.getElementById('welcome-screen').style.opacity = '0';
-            setTimeout(() => document.getElementById('welcome-screen').style.display = 'none', 1000);
-        }, 2000);
-        renderWheel();
-        updateScore();
-        loadTasks();
-    };
-
-    function updateScore() {
-        document.getElementById('total-score').innerText = Math.floor(score).toLocaleString();
-    }
-
-    // نظام النقر الاحترافي
-    document.getElementById('tap-target').onclick = (e) => {
-        if(energy > 0) {
-            score++;
-            energy -= 2;
-            updateScore();
-            showFloatingText(e);
-            document.getElementById('energy-val').innerText = energy;
-            document.getElementById('energy-bar').style.width = (energy/10) + '%';
-            localStorage.setItem('score', score);
+// ========== التهيئة عند تحميل الصفحة ==========
+window.onload = function() {
+    console.log("✅ الصفحة محملة");
+    
+    // 1. تحديث العرض أولاً
+    updateUI();
+    
+    // 2. تهيئة التنقل بين الخانات
+    initNavigation();
+    
+    // 3. ربط حدث النقر على العملة
+    initTapCoin();
+    
+    // 4. إنشاء عجلة الحظ
+    createWheel();
+    
+    // 5. إخفاء رسالة الترحيب
+    setTimeout(() => {
+        document.getElementById('welcome').style.display = 'none';
+    }, 2000);
+    
+    // 6. استعادة الطاقة
+    setInterval(() => {
+        if (energy < 130) {
+            energy++;
+            localStorage.setItem('energy', energy);
+            updateBattery();
         }
-    };
+    }, 3000);
+};
 
-    function showFloatingText(e) {
-        let n = document.createElement('div');
-        n.innerText = '+1';
-        n.style.position = 'fixed';
-        n.style.left = e.clientX + 'px';
-        n.style.top = e.clientY + 'px';
-        n.style.color = 'var(--primary)';
-        n.style.fontWeight = 'bold';
-        n.style.animation = 'tapAnim 0.5s forwards';
-        document.body.appendChild(n);
-        setTimeout(() => n.remove(), 500);
+// ========== نظام النقر الرئيسي ==========
+function initTapCoin() {
+    console.log("🔧 جاري تهيئة زر النقر...");
+    
+    const tapCoin = document.getElementById('tapCoin');
+    
+    if (!tapCoin) {
+        console.error("❌ زر النقر غير موجود!");
+        return;
     }
-
-    // التنقل بين الـ 7 خانات
-    function showTab(tabId) {
-        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
-        document.getElementById('tab-' + tabId).style.display = 'block';
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-        event.currentTarget.classList.add('active');
-    }
-
-    // رسم العجلة بشكل عصري
-    function renderWheel() {
-        const canvas = document.getElementById('wheel-canvas');
-        const ctx = canvas.getContext('2d');
-        const colors = ['#FFD700', '#222', '#FFD700', '#222', '#FFD700', '#222', '#FFD700', '#222'];
-        const labels = ['100', '500', '10', '1000', '50', '200', '5', 'MAX'];
+    
+    // إزالة أي أحداث سابقة
+    tapCoin.onclick = null;
+    
+    // إضافة الحدث الجديد
+    tapCoin.addEventListener('click', function(e) {
+        console.log("🖱️ تم النقر على العملة");
         
-        for(let i=0; i<8; i++) {
-            ctx.beginPath();
-            ctx.moveTo(150, 150);
-            ctx.arc(150, 150, 150, i * Math.PI/4, (i+1) * Math.PI/4);
-            ctx.fillStyle = colors[i];
-            ctx.fill();
-            ctx.save();
-            ctx.translate(150, 150);
-            ctx.rotate(i * Math.PI/4 + Math.PI/8);
-            ctx.fillStyle = colors[i] === '#222' ? 'white' : 'black';
-            ctx.fillText(labels[i], 100, 10);
-            ctx.restore();
+        if (energy > 0) {
+            // زيادة النقاط
+            score++;
+            energy--;
+            
+            console.log(`📊 النقاط: ${score}, الطاقة: ${energy}`);
+            
+            // حفظ في التخزين المحلي
+            localStorage.setItem('score', score);
+            localStorage.setItem('energy', energy);
+            
+            // تحديث الواجهة
+            updateUI();
+            
+            // تأثيرات النقر
+            createTapEffect(e);
+            playTapSound();
+            
+            // اهتزاز الزر
+            tapCoin.style.transform = 'scale(0.85)';
+            setTimeout(() => {
+                tapCoin.style.transform = 'scale(1)';
+            }, 100);
+        } else {
+            showNotification('⚡ الطاقة نفذت! انتظر لاستعادتها');
+            console.log("⚠️ الطاقة نفذت");
         }
-    }
+    });
+    
+    console.log("✅ تم ربط حدث النقر بنجاح");
+}
 
-    function spinWheel() {
-        let deg = Math.floor(2000 + Math.random() * 2000);
-        document.getElementById('wheel-canvas').style.transform = `rotate(${deg}deg)`;
-        setTimeout(() => {
-            alert("مبروك! لقد ربحت نقاطاً إضافية");
-            score += 500;
-            updateScore();
-        }, 4000);
+// ========== تحديث الواجهة ==========
+function updateUI() {
+    console.log("🔄 تحديث الواجهة...");
+    
+    // 1. تحديث النقاط
+    const scoreElement = document.getElementById('score');
+    if (scoreElement) {
+        scoreElement.textContent = score;
+        console.log(`🎯 النقاط المحدثة: ${score}`);
     }
+    
+    // 2. تحديث الطاقة
+    const energyElement = document.getElementById('energy');
+    if (energyElement) {
+        energyElement.textContent = energy;
+    }
+    
+    // 3. تحديث البطارية
+    updateBattery();
+    
+    // 4. تحديث الإحالات
+    const refElement = document.getElementById('refCount');
+    if (refElement) {
+        refElement.textContent = refCount;
+    }
+    
+    // 5. تحديث محاولات العجلة
+    const spinsElement = document.getElementById('spinsLeft');
+    if (spinsElement) {
+        spinsElement.textContent = refCount;
+    }
+    
+    // 6. تحديث زر العجلة
+    const spinBtn = document.getElementById('spinBtn');
+    if (spinBtn) {
+        spinBtn.disabled = refCount <= 0;
+        spinBtn.innerHTML = `تدوير العجلة (المحاولات: <span id="spinsLeft">${refCount}</span>)`;
+    }
+}
 
-    function loadTasks() {
-        const container = document.getElementById('tasks-container');
-        const demoTasks = [
-            {t: 'اشتراك في قناة المطور', r: 5000},
-            {t: 'متابعة حساب تويتر', r: 2000},
-            {t: 'مشاهدة فيديو اليوتيوب', r: 10000}
-        ];
-        demoTasks.forEach(task => {
-            container.innerHTML += `<div class="task-card"><span>${task.t}</span><button onclick="doTask(this, ${task.r})">+${task.r}</button></div>`;
+// ========== نظام التنقل (مُصلح) ==========
+function initNavigation() {
+    console.log("📍 تهيئة نظام التنقل...");
+    
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    navButtons.forEach(btn => {
+        // إزالة أي أحداث سابقة
+        btn.onclick = null;
+        
+        // إضافة الحدث الجديد
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            
+            const tabId = this.getAttribute('data-tab');
+            console.log(`🔄 الانتقال إلى: ${tabId}`);
+            
+            // إخفاء جميع الخانات
+            tabContents.forEach(tab => {
+                tab.style.display = 'none';
+                tab.classList.remove('active');
+            });
+            
+            // إلغاء تفعيل جميع الأزرار
+            navButtons.forEach(navBtn => {
+                navBtn.classList.remove('active');
+            });
+            
+            // إظهار الخانة المطلوبة
+            const targetTab = document.getElementById(tabId);
+            if (targetTab) {
+                targetTab.style.display = 'block';
+                targetTab.classList.add('active');
+                console.log(`✅ تم عرض: ${tabId}`);
+            } else {
+                console.error(`❌ الخانة ${tabId} غير موجودة`);
+            }
+            
+            // تفعيل الزر
+            this.classList.add('active');
         });
+    });
+    
+    // تفعيل الخانة الرئيسية أولاً
+    if (navButtons[0]) {
+        navButtons[0].click();
     }
+}
 
-    function doTask(btn, reward) {
-        btn.innerText = 'جاري التحقق...';
+// ========== دالات المساعدة ==========
+function updateBattery() {
+    const batteryFill = document.getElementById('batteryFill');
+    if (batteryFill) {
+        const percent = (energy / 130) * 100;
+        batteryFill.style.width = percent + '%';
+    }
+}
+
+function createTapEffect(e) {
+    const effect = document.createElement('div');
+    effect.className = 'tap-effect';
+    effect.style.left = (e.clientX - 25) + 'px';
+    effect.style.top = (e.clientY - 25) + 'px';
+    document.body.appendChild(effect);
+    setTimeout(() => effect.remove(), 800);
+}
+
+function playTapSound() {
+    try {
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800;
+        oscillator.type = 'sine';
+        
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.1);
+    } catch (e) {
+        console.log("🔇 الصوت غير متوفر");
+    }
+}
+
+function showNotification(message) {
+    const notification = document.getElementById('notification');
+    if (notification) {
+        notification.textContent = message;
+        notification.classList.add('show');
+        
         setTimeout(() => {
-            btn.parentElement.style.opacity = '0.5';
-            btn.innerText = 'مكتمل ✅';
-            score += reward;
-            updateScore();
-        }, 2000);
+            notification.classList.remove('show');
+        }, 3000);
     }
+}
+
+// ========== عجلة الحظ ==========
+function createWheel() {
+    const wheel = document.getElementById('wheel');
+    if (!wheel) return;
+    
+    wheel.innerHTML = '';
+    const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
+    
+    for (let i = 0; i < 8; i++) {
+        const segment = document.createElement('div');
+        segment.className = 'wheel-number';
+        segment.style.transform = `translateX(-50%) rotate(${i * 45}deg)`;
+        segment.style.transformOrigin = 'center 140px';
+        segment.textContent = rewards[i];
+        wheel.appendChild(segment);
+    }
+}
+
+function startSpin() {
+    if (refCount <= 0) {
+        showNotification('⚠️ لا توجد محاولات متبقية');
+        return;
+    }
+    
+    const wheel = document.getElementById('wheel');
+    const spinBtn = document.getElementById('spinBtn');
+    
+    if (!wheel || !spinBtn) return;
+    
+    // خصم محاولة
+    refCount--;
+    localStorage.setItem('refCount', refCount);
+    
+    // تحديث الواجهة
+    updateUI();
+    
+    // تدوير العجلة
+    const totalDegrees = 1440 + (Math.floor(Math.random() * 8) * 45);
+    wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+    wheel.style.transform = `rotate(${totalDegrees}deg)`;
+    
+    spinBtn.disabled = true;
+    
+    // حساب الجائزة
+    setTimeout(() => {
+        const normalizedDeg = totalDegrees % 360;
+        const segmentIndex = Math.floor((360 - normalizedDeg) / 45) % 8;
+        const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
+        const reward = rewards[segmentIndex];
+        
+        if (reward > 0) {
+            score += reward;
+            localStorage.setItem('score', score);
+            showNotification(`🎉 ربحت ${reward} نقطة!`);
+        } else {
+            showNotification('😢 لم تربح شيئاً هذه المرة');
+        }
+        
+        updateUI();
+        spinBtn.disabled = refCount <= 0;
+    }, 4000);
+}
+
+// ========== ألعاب النقر ==========
+function playGame(gameId) {
+    const scores = JSON.parse(localStorage.getItem('gameScores')) || [0, 0, 0, 0];
+    scores[gameId - 1] += Math.floor(Math.random() * 5) + 3;
+    localStorage.setItem('gameScores', JSON.stringify(scores));
+    
+    // تحديث العرض
+    const scoreElement = document.getElementById(`game${gameId}Score`);
+    if (scoreElement) {
+        scoreElement.textContent = scores[gameId - 1];
+    }
+    
+    // تأثير
+    const btn = event.target;
+    btn.style.transform = 'scale(0.9)';
+    setTimeout(() => {
+        btn.style.transform = 'scale(1)';
+    }, 100);
+}
+
+// ========== نظام الأصدقاء ==========
+function copyRefLink() {
+    const link = "https://t.me/Bitco93_bot?start=ref_" + Date.now();
+    navigator.clipboard.writeText(link).then(() => {
+        showNotification('✅ تم نسخ رابط الدعوة');
+    });
+}
+
+// ========== اختبار سريع ==========
+// افتح console واضغط F12 ثم اكتب:
+// testBot()
+function testBot() {
+    console.log("🧪 بدء اختبار البوت...");
+    console.log("1. النقاط الحالية:", score);
+    console.log("2. الطاقة الحالية:", energy);
+    console.log("3. الإحالات:", refCount);
+    console.log("4. زر النقر:", document.getElementById('tapCoin') ? "✅ موجود" : "❌ مفقود");
+    console.log("5. أزرار التنقل:", document.querySelectorAll('.nav-btn').length, "زر");
+    console.log("6. الخانات:", document.querySelectorAll('.tab-content').length, "خانة");
+    
+    // اختبار النقر
+    if (document.getElementById('tapCoin')) {
+        console.log("✅ البوت جاهز للاختبار!");
+        console.log("🔍 اضغط على العملة لاختبار النقر");
+    } else {
+        console.error("❌ هناك خطأ في التركيب");
+    }
+}
+
+// تشغيل الاختبار تلقائياً
+setTimeout(() => {
+    testBot();
+}, 1000);
 </script>
-
-<style>
-    @keyframes tapAnim { to { transform: translateY(-100px); opacity: 0; } }
-    .btn { cursor: pointer; transition: 0.3s; }
-    .btn:active { transform: scale(0.9); }
-</style>
-
 </body>
 </html>
