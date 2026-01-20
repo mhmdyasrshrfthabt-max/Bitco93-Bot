@@ -3,959 +3,297 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bitco93 Pro</title>
+    <title>Bitco93 Pro - Ultra Edition</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        :root {
+            --primary: #FFD700;
+            --secondary: #FFA500;
+            --bg-dark: #0a0a0f;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --text-gray: #aaa;
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Cairo', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 100%);
-            color: white;
-            min-height: 100vh;
-            padding-bottom: 80px;
-            background-image: url('https://i.ibb.co/NMGSj3p/1770381769606.jpg');
+            background-color: var(--bg-dark);
+            background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://i.ibb.co/NMGSj3p/1770381769606.jpg');
             background-size: cover;
             background-attachment: fixed;
+            color: white;
+            overflow-x: hidden;
+            padding-bottom: 90px;
         }
 
-        /* تنبيه الترحيب */
-        #welcome {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            animation: fadeOut 2s ease 2s forwards;
+        /* شاشة الترحيب الاحترافية */
+        #welcome-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: black; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; z-index: 10000;
+            transition: opacity 1s ease;
         }
-        #welcome h1 {
-            color: #FFD700;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        #welcome p {
-            color: #ccc;
-            font-size: 1.2rem;
-        }
+        .loader-logo { width: 120px; animation: pulse 2s infinite; }
 
-        /* المحتوى الرئيسي */
-        .container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+        /* الهيكل الرئيسي */
+        .container { max-width: 500px; margin: 0 auto; padding: 20px; }
 
-        /* شريط المستخدم */
-        .user-bar {
-            background: rgba(255, 215, 0, 0.1);
-            border: 2px solid #FFD700;
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        /* الخانة الرئيسية - نظام النقر (هامستر) */
+        .main-coin-container {
+            display: flex; flex-direction: column; align-items: center; margin: 40px 0;
         }
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .user-avatar {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #000;
-        }
-        .level-bar {
-            width: 150px;
-            height: 8px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .level-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FFD700, #FFA500);
-            width: 45%;
-            border-radius: 4px;
-        }
-        .score-display {
-            text-align: center;
-        }
-        .score-display h2 {
-            color: #FFD700;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-        }
-
-        /* زر النقر */
-        .tap-area {
-            text-align: center;
-            margin: 30px 0;
-        }
-        .tap-coin {
-            width: 200px;
-            height: 200px;
-            background-image: url('https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg');
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            margin: 0 auto;
-            cursor: pointer;
-            transition: transform 0.1s;
-            filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
-            animation: float 3s ease-in-out infinite;
-        }
-        .tap-coin:active {
-            transform: scale(0.9);
-        }
-
-        /* البطارية */
-        .battery {
-            background: rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 10px 20px;
-            margin: 20px auto;
-            max-width: 300px;
-            border: 2px solid #FFD700;
-        }
-        .battery-fill {
-            height: 20px;
-            background: linear-gradient(90deg, #FFD700, #FFEE58);
-            border-radius: 10px;
-            width: 100%;
-            transition: width 0.3s;
-        }
-        .battery-text {
-            text-align: center;
-            margin-top: 5px;
-            font-weight: bold;
-        }
-
-        /* علامات التبويب */
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.5s ease;
-        }
-        .tab-content.active {
-            display: block;
-        }
-
-        /* العجلة */
-        .wheel-container {
-            width: 300px;
-            height: 300px;
+        .tap-circle {
+            width: 250px; height: 250px; border-radius: 50%;
+            background: radial-gradient(circle, var(--primary), var(--secondary));
+            padding: 10px; box-shadow: 0 0 50px rgba(255, 215, 0, 0.3);
+            cursor: pointer; transition: transform 0.1s;
             position: relative;
-            margin: 30px auto;
         }
-        #wheel {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: conic-gradient(
-                #FF5252, #FF9800, #FFEB3B, #4CAF50,
-                #2196F3, #9C27B0, #E91E63, #00BCD4
-            );
-            position: relative;
-            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        .tap-circle img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .tap-circle:active { transform: scale(0.92); }
+
+        /* عجلة الحظ المطورة */
+        .wheel-box { position: relative; width: 320px; height: 320px; margin: 20px auto; }
+        #wheel-canvas { width: 100%; height: 100%; transform: rotate(0deg); transition: transform 4s cubic-bezier(0.1, 0, 0.1, 1); }
+        .wheel-pin { 
+            position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 30px; height: 40px; background: var(--primary); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10;
         }
-        .wheel-number {
-            position: absolute;
-            width: 40px;
-            height: 40px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: #333;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%) rotate(0deg);
-            transform-origin: center 140px;
+
+        /* نظام المهام - روابط احترافية */
+        .task-card {
+            background: var(--card-bg); border-radius: 15px; padding: 15px;
+            margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid rgba(255,215,0,0.1);
         }
-        .wheel-center {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            background: #FFD700;
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 2;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
+
+        /* القائمة السفلية (7 خانات) */
+        .nav-bar {
+            position: fixed; bottom: 0; width: 100%; background: rgba(0,0,0,0.9);
+            display: flex; justify-content: space-around; padding: 10px 0;
+            border-top: 2px solid var(--primary); backdrop-filter: blur(10px);
         }
-        .wheel-pointer {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-top: 25px solid #FFD700;
-            z-index: 3;
-        }
+        .nav-item { color: var(--text-gray); text-align: center; font-size: 10px; flex: 1; cursor: pointer; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 20px; display: block; margin-bottom: 4px; }
 
         /* الألعاب */
-        .games-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 20px;
-        }
-        .game-card {
-            background: rgba(255,255,255,0.1);
-            border-radius: 15px;
-            padding: 20px;
-            text-align: center;
-            border: 2px solid transparent;
-            transition: all 0.3s;
-        }
-        .game-card:hover {
-            border-color: #FFD700;
-            transform: translateY(-5px);
-        }
-        .game-icon {
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-        .game-score {
-            font-size: 1.8rem;
-            color: #FFD700;
-            font-weight: bold;
-            margin: 10px 0;
+        .games-list { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .game-item { background: var(--card-bg); border-radius: 15px; padding: 20px; text-align: center; }
+
+        /* التنبيهات */
+        .toast {
+            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+            background: var(--primary); color: black; padding: 10px 20px;
+            border-radius: 20px; font-weight: bold; display: none; z-index: 1000;
         }
 
-        /* الأصدقاء */
-        .friend-list {
-            margin-top: 20px;
-        }
-        .friend-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        .friend-avatar {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #6C63FF, #FFD700);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        /* المهام */
-        .task-item {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .task-reward {
-            background: #FFD700;
-            color: #000;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-        }
-
-        /* الإعدادات */
-        .settings-group {
-            background: rgba(255,255,255,0.05);
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .language-selector {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        .lang-btn {
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.1);
-            border: none;
-            border-radius: 8px;
-            color: white;
-            cursor: pointer;
-        }
-        .lang-btn.active {
-            background: #FFD700;
-            color: #000;
-        }
-
-        /* القائمة السفلية */
-        .nav-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(10, 10, 15, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-around;
-            padding: 12px 0;
-            border-top: 2px solid #FFD700;
-            z-index: 1000;
-        }
-        .nav-btn {
-            background: none;
-            border: none;
-            color: #888;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            font-size: 0.8rem;
-            cursor: pointer;
-            flex: 1;
-        }
-        .nav-btn.active {
-            color: #FFD700;
-            font-weight: bold;
-        }
-        .nav-btn i {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-        }
-
-        /* الأزرار */
-        .btn {
-            background: linear-gradient(135deg, #FFD700, #FFA500);
-            color: #000;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 25px;
-            font-weight: bold;
-            font-size: 1rem;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 10px;
-            transition: transform 0.2s;
-        }
-        .btn:active {
-            transform: scale(0.95);
-        }
-
-        /* الأنيميشن */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeOut {
-            from { opacity: 1; }
-            to { opacity: 0; visibility: hidden; }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-        @keyframes coinEffect {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        /* تأثير النقر */
-        .tap-effect {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            background: url('https://cdn-icons-png.flaticon.com/512/3135/3135715.png');
-            background-size: contain;
-            pointer-events: none;
-            opacity: 0;
-            animation: tapAnim 0.8s ease-out;
-        }
-        @keyframes tapAnim {
-            0% { transform: translateY(0) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
-        }
-
-        /* تنبيهات */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.9);
-            color: #FFD700;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border-left: 5px solid #FFD700;
-            z-index: 10000;
-            transform: translateX(120%);
-            transition: transform 0.5s ease;
-        }
-        .notification.show {
-            transform: translateX(0);
-        }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<!-- رسالة ترحيب -->
-<div id="welcome">
-    <h1>أهلاً بك في بوت Bitco93 Pro</h1>
-    <p>جاري التحميل...</p>
+<div id="welcome-screen">
+    <img src="https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg" class="loader-logo">
+    <h2 id="welcome-text" style="margin-top:20px; color:var(--primary)">أهلاً بك في Bitco93 Pro</h2>
 </div>
 
-<!-- تنبيهات -->
-<div id="notification" class="notification"></div>
-
-<!-- المحتوى الرئيسي -->
 <div class="container">
-    
-    <!-- الخانة الرئيسية -->
-    <div id="home" class="tab-content active">
-        <div class="user-bar">
-            <div class="user-info">
-                <div class="user-avatar">B93</div>
-                <div>
-                    <h3>المستوى <span id="level">1</span></h3>
-                    <div class="level-bar">
-                        <div class="level-fill" id="level-progress"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="score-display">
-                <h2 id="score">0</h2>
-                <p>النقاط</p>
+    <section id="tab-home" class="content-section">
+        <div style="text-align: center; margin-top: 20px;">
+            <h1 id="total-score" style="font-size: 40px; color: var(--primary);">0</h1>
+            <p style="color:var(--text-gray)">إجمالي العملات</p>
+        </div>
+        <div class="main-coin-container">
+            <div class="tap-circle" id="tap-target">
+                <img src="https://i.ibb.co/Y4fF7CNW/AQPr8-H2tv-Fn-M0-STXP-TBNJlmz3-J3-Hq-HSs-Jijd1-TD5-LDc2zt-TYWSWQc-Bzew-FXPSOIJAp.jpg">
             </div>
         </div>
+        <div style="background: rgba(255,255,255,0.1); border-radius: 10px; padding: 10px;">
+            <div id="energy-bar" style="height: 10px; background: var(--primary); width: 100%; border-radius: 5px;"></div>
+            <p style="margin-top:5px; font-size: 12px;">⚡ الطاقة: <span id="energy-val">1000</span>/1000</p>
+        </div>
+    </section>
 
-        <div class="tap-area">
-            <div class="tap-coin" id="tapCoin"></div>
-            <p style="color: #aaa; margin-top: 10px;">انقر لجمع النقاط!</p>
+    <section id="tab-wheel" class="content-section" style="display:none">
+        <h2 style="text-align:center">🎡 عجلة الحظ</h2>
+        <div class="wheel-box">
+            <div class="wheel-pin"></div>
+            <canvas id="wheel-canvas" width="300" height="300"></canvas>
         </div>
+        <button class="btn" id="spin-btn" onclick="spinWheel()" style="width:100%; padding:15px; border-radius:30px; background:var(--primary); font-weight:bold; border:none">جرب حظك!</button>
+    </section>
 
-        <div class="battery">
-            <div class="battery-fill" id="batteryFill"></div>
-            <div class="battery-text">⚡ طاقة: <span id="energy">130</span>/130</div>
+    <section id="tab-games" class="content-section" style="display:none">
+        <h2 style="margin-bottom:20px">🎮 الألعاب المتاحة</h2>
+        <div class="games-list">
+            <div class="game-item"><i>🐹</i><h3>هامستر كليك</h3><button onclick="playGame()">العب الآن</button></div>
+            <div class="game-item"><i>⛏️</i><h3>منجم الذهب</h3><button onclick="playGame()">العب الآن</button></div>
         </div>
-    </div>
+    </section>
 
-    <!-- عجلة الحظ -->
-    <div id="spin" class="tab-content">
-        <h2 style="text-align: center; color: #FFD700; margin-bottom: 20px;">🎡 عجلة الحظ</h2>
-        <div class="wheel-container">
-            <div class="wheel-pointer"></div>
-            <div id="wheel"></div>
-            <div class="wheel-center">🎁</div>
+    <section id="tab-friends" class="content-section" style="display:none">
+        <h2>👥 دعوة الأصدقاء</h2>
+        <div class="task-card" style="margin-top:20px">
+            <div>
+                <p>رابط الإحالة الخاص بك</p>
+                <small id="ref-url">t.me/bot?start=12345</small>
+            </div>
+            <button onclick="copyRef()">نسخ</button>
         </div>
-        <button class="btn" id="spinBtn" onclick="startSpin()" disabled>تدوير العجلة (المحاولات: <span id="spinsLeft">0</span>)</button>
-    </div>
+    </section>
 
-    <!-- الألعاب -->
-    <div id="games" class="tab-content">
-        <h2 style="text-align: center; color: #FFD700; margin-bottom: 20px;">🎮 ألعاب النقر</h2>
-        <div class="games-grid">
-            <div class="game-card">
-                <div class="game-icon">👾</div>
-                <h3>وحش النقر</h3>
-                <div class="game-score" id="game1Score">0</div>
-                <button class="btn" onclick="playGame(1)">انقر!</button>
+    <section id="tab-tasks" class="content-section" style="display:none">
+        <h2>💰 مهام القنوات</h2>
+        <div id="tasks-container">
             </div>
-            <div class="game-card">
-                <div class="game-icon">⚡</div>
-                <h3>سباق النقر</h3>
-                <div class="game-score" id="game2Score">0</div>
-                <button class="btn" onclick="playGame(2)">انقر!</button>
-            </div>
-            <div class="game-card">
-                <div class="game-icon">🎯</div>
-                <h3>دقة النقر</h3>
-                <div class="game-score" id="game3Score">0</div>
-                <button class="btn" onclick="playGame(3)">انقر!</button>
-            </div>
-            <div class="game-card">
-                <div class="game-icon">🏆</div>
-                <h3>تحدي النقر</h3>
-                <div class="game-score" id="game4Score">0</div>
-                <button class="btn" onclick="playGame(4)">انقر!</button>
-            </div>
-        </div>
-    </div>
+    </section>
 
-    <!-- الأصدقاء -->
-    <div id="friends" class="tab-content">
-        <h2 style="text-align: center; color: #FFD700; margin-bottom: 20px;">👥 نظام الأصدقاء</h2>
-        <div style="background: rgba(255,215,0,0.1); padding: 20px; border-radius: 15px; margin-bottom: 20px;">
-            <h3>الإحالات: <span id="refCount">0</span></h3>
-            <p>شارك الرابط مع أصدقائك:</p>
-            <div style="display: flex; gap: 10px; margin: 15px 0;">
-                <input type="text" id="refLink" value="https://t.me/Bitco93_bot?start=ref_123" readonly style="flex:1; padding: 10px; border-radius: 8px; border: 1px solid #FFD700; background: rgba(0,0,0,0.3); color: white;">
-                <button class="btn" onclick="copyRefLink()" style="width: auto; padding: 10px 20px;">نسخ</button>
-            </div>
+    <section id="tab-wallet" class="content-section" style="display:none">
+        <div style="text-align:center; padding: 50px 0;">
+            <i class="fas fa-wallet" style="font-size: 60px; color: var(--primary);"></i>
+            <h2 style="margin-top:20px">المحفظة قريباً...</h2>
+            <p style="color:var(--text-gray)">سيتم فتح السحب عند الوصول للمرحلة القادمة</p>
         </div>
-        <h3>قائمة الأصدقاء (<span id="friendsCount">0</span>)</h3>
-        <div class="friend-list" id="friendsList"></div>
-    </div>
+    </section>
 
-    <!-- المهام -->
-    <div id="tasks" class="tab-content">
-        <h2 style="text-align: center; color: #FFD700; margin-bottom: 20px;">💰 المهام اليومية</h2>
-        <div id="tasksList">
-            <!-- المهام تضاف هنا -->
+    <section id="tab-settings" class="content-section" style="display:none">
+        <h2>⚙️ الإعدادات</h2>
+        <div class="task-card" style="margin-top:20px">
+            <p>اللغة / Language</p>
+            <select onchange="updateLang(this.value)" style="background:none; color:white; border:1px solid var(--primary)">
+                <option value="ar">العربية</option>
+                <option value="en">English</option>
+            </select>
         </div>
-        <button class="btn" onclick="claimAllTasks()">استلام جميع المكافآت</button>
-    </div>
-
-    <!-- المحفظة -->
-    <div id="wallet" class="tab-content">
-        <div style="text-align: center; padding: 50px 20px;">
-            <div style="font-size: 4rem; color: #FFD700; margin-bottom: 20px;">👛</div>
-            <h2 style="color: #FFD700; font-size: 2.5rem; margin-bottom: 20px;">قريباً</h2>
-            <p style="color: #aaa;">نظام المحفظة قيد التطوير</p>
-        </div>
-    </div>
-
-    <!-- الإعدادات -->
-    <div id="settings" class="tab-content">
-        <h2 style="text-align: center; color: #FFD700; margin-bottom: 20px;">⚙️ الإعدادات</h2>
-        <div class="settings-group">
-            <h3>اللغة</h3>
-            <div class="language-selector">
-                <button class="lang-btn active" onclick="changeLanguage('ar')">العربية</button>
-                <button class="lang-btn" onclick="changeLanguage('en')">English</button>
-                <button class="lang-btn" onclick="changeLanguage('fr')">Français</button>
-                <button class="lang-btn" onclick="changeLanguage('es')">Español</button>
-                <button class="lang-btn" onclick="changeLanguage('tr')">Türkçe</button>
-            </div>
-        </div>
-        <div class="settings-group">
-            <h3>الصوت والتأثيرات</h3>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-                <span>صوت النقر</span>
-                <label class="switch">
-                    <input type="checkbox" id="soundToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-                <span>التأثيرات البصرية</span>
-                <label class="switch">
-                    <input type="checkbox" id="effectsToggle" checked>
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </div>
-        <button class="btn" onclick="resetData()" style="background: linear-gradient(135deg, #FF4757, #FF6B81);">إعادة تعيين البيانات</button>
-    </div>
+    </section>
 </div>
 
-<!-- القائمة السفلية -->
-<div class="nav-bar">
-    <button class="nav-btn active" data-tab="home">
-        <i>🏠</i> الرئيسية
-    </button>
-    <button class="nav-btn" data-tab="spin">
-        <i>🎡</i> العجلة
-    </button>
-    <button class="nav-btn" data-tab="games">
-        <i>🎮</i> الألعاب
-    </button>
-    <button class="nav-btn" data-tab="friends">
-        <i>👥</i> الأصدقاء
-    </button>
-    <button class="nav-btn" data-tab="tasks">
-        <i>💰</i> المهام
-    </button>
-    <button class="nav-btn" data-tab="wallet">
-        <i>👛</i> المحفظة
-    </button>
-    <button class="nav-btn" data-tab="settings">
-        <i>⚙️</i> الإعدادات
-    </button>
-</div>
+<nav class="nav-bar">
+    <div class="nav-item active" onclick="showTab('home')"><i class="fas fa-home"></i>الرئيسية</div>
+    <div class="nav-item" onclick="showTab('wheel')"><i class="fas fa-spinner"></i>العجلة</div>
+    <div class="nav-item" onclick="showTab('games')"><i class="fas fa-gamepad"></i>الألعاب</div>
+    <div class="nav-item" onclick="showTab('friends')"><i class="fas fa-users"></i>الأصدقاء</div>
+    <div class="nav-item" onclick="showTab('tasks')"><i class="fas fa-tasks"></i>المهام</div>
+    <div class="nav-item" onclick="showTab('wallet')"><i class="fas fa-wallet"></i>المحفظة</div>
+    <div class="nav-item" onclick="showTab('settings')"><i class="fas fa-cog"></i>الإعدادات</div>
+</nav>
+
+<div id="toast" class="toast">تم جمع العملات!</div>
 
 <script>
-    // ========== المتغيرات العامة ==========
-    let score = parseInt(localStorage.getItem('score')) || 0;
-    let energy = parseInt(localStorage.getItem('energy')) || 130;
-    let level = parseInt(localStorage.getItem('level')) || 1;
-    let xp = parseInt(localStorage.getItem('xp')) || 0;
-    let refCount = parseInt(localStorage.getItem('refCount')) || 0;
-    let spinsLeft = parseInt(localStorage.getItem('spinsLeft')) || 0;
-    let gameScores = JSON.parse(localStorage.getItem('gameScores')) || [0,0,0,0];
-    let completedTasks = JSON.parse(localStorage.getItem('completedTasks')) || [];
-    let language = localStorage.getItem('language') || 'ar';
-    
-    // ========== تهيئة الصفحة ==========
-    document.addEventListener('DOMContentLoaded', function() {
-        // إخفاء رسالة الترحيب بعد 2 ثانية
+    let score = localStorage.getItem('score') || 0;
+    let energy = 1000;
+
+    // تفعيل شاشة الترحيب
+    window.onload = () => {
         setTimeout(() => {
-            document.getElementById('welcome').style.display = 'none';
+            document.getElementById('welcome-screen').style.opacity = '0';
+            setTimeout(() => document.getElementById('welcome-screen').style.display = 'none', 1000);
         }, 2000);
-        
-        // تهيئة الواجهة
-        updateUI();
-        createWheel();
+        renderWheel();
+        updateScore();
         loadTasks();
-        initNavigation();
-        initTapCoin();
+    };
+
+    function updateScore() {
+        document.getElementById('total-score').innerText = Math.floor(score).toLocaleString();
+    }
+
+    // نظام النقر الاحترافي
+    document.getElementById('tap-target').onclick = (e) => {
+        if(energy > 0) {
+            score++;
+            energy -= 2;
+            updateScore();
+            showFloatingText(e);
+            document.getElementById('energy-val').innerText = energy;
+            document.getElementById('energy-bar').style.width = (energy/10) + '%';
+            localStorage.setItem('score', score);
+        }
+    };
+
+    function showFloatingText(e) {
+        let n = document.createElement('div');
+        n.innerText = '+1';
+        n.style.position = 'fixed';
+        n.style.left = e.clientX + 'px';
+        n.style.top = e.clientY + 'px';
+        n.style.color = 'var(--primary)';
+        n.style.fontWeight = 'bold';
+        n.style.animation = 'tapAnim 0.5s forwards';
+        document.body.appendChild(n);
+        setTimeout(() => n.remove(), 500);
+    }
+
+    // التنقل بين الـ 7 خانات
+    function showTab(tabId) {
+        document.querySelectorAll('.content-section').forEach(s => s.style.display = 'none');
+        document.getElementById('tab-' + tabId).style.display = 'block';
+        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+
+    // رسم العجلة بشكل عصري
+    function renderWheel() {
+        const canvas = document.getElementById('wheel-canvas');
+        const ctx = canvas.getContext('2d');
+        const colors = ['#FFD700', '#222', '#FFD700', '#222', '#FFD700', '#222', '#FFD700', '#222'];
+        const labels = ['100', '500', '10', '1000', '50', '200', '5', 'MAX'];
         
-        // استعادة الطاقة كل 3 ثواني
-        setInterval(() => {
-            if (energy < 130) {
-                energy++;
-                localStorage.setItem('energy', energy);
-                updateBattery();
-            }
-        }, 3000);
-    });
-    
-    // ========== نظام النقر الرئيسي ==========
-    function initTapCoin() {
-        const tapCoin = document.getElementById('tapCoin');
-        tapCoin.addEventListener('click', function(e) {
-            if (energy > 0) {
-                // زيادة النقاط
-                score++;
-                energy--;
-                xp += 2;
-                
-                // حفظ البيانات
-                localStorage.setItem('score', score);
-                localStorage.setItem('energy', energy);
-                localStorage.setItem('xp', xp);
-                
-                // تحديث الواجهة
-                updateUI();
-                
-                // تأثيرات النقر
-                createTapEffect(e);
-                playTapSound();
-                
-                // التحقق من مستوى جديد
-                checkLevelUp();
-            } else {
-                showNotification('⚡ الطاقة نفذت! انتظر لاستعادتها');
-            }
-        });
-    }
-    
-    function createTapEffect(e) {
-        const effect = document.createElement('div');
-        effect.className = 'tap-effect';
-        effect.style.left = (e.clientX - 25) + 'px';
-        effect.style.top = (e.clientY - 25) + 'px';
-        document.body.appendChild(effect);
-        setTimeout(() => effect.remove(), 800);
-    }
-    
-    function playTapSound() {
-        if (document.getElementById('soundToggle')?.checked) {
-            // صوت نقر بسيط
-            const audio = new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ');
-            audio.volume = 0.3;
-            audio.play().catch(() => {});
+        for(let i=0; i<8; i++) {
+            ctx.beginPath();
+            ctx.moveTo(150, 150);
+            ctx.arc(150, 150, 150, i * Math.PI/4, (i+1) * Math.PI/4);
+            ctx.fillStyle = colors[i];
+            ctx.fill();
+            ctx.save();
+            ctx.translate(150, 150);
+            ctx.rotate(i * Math.PI/4 + Math.PI/8);
+            ctx.fillStyle = colors[i] === '#222' ? 'white' : 'black';
+            ctx.fillText(labels[i], 100, 10);
+            ctx.restore();
         }
     }
-    
-    // ========== تحديث الواجهة ==========
-    function updateUI() {
-        // النقاط والطاقة
-        document.getElementById('score').textContent = score;
-        document.getElementById('energy').textContent = energy;
-        updateBattery();
-        
-        // المستوى والخبرة
-        document.getElementById('level').textContent = level;
-        const xpNeeded = level * 100;
-        const progress = Math.min((xp / xpNeeded) * 100, 100);
-        document.getElementById('level-progress').style.width = progress + '%';
-        
-        // الإحالات والعجلة
-        document.getElementById('refCount').textContent = refCount;
-        spinsLeft = refCount; // كل إحالة = محاولة عجلة
-        document.getElementById('spinsLeft').textContent = spinsLeft;
-        document.getElementById('spinBtn').disabled = spinsLeft <= 0;
-        
-        // تحديث ألعاب النقر
-        for (let i = 0; i < 4; i++) {
-            document.getElementById(`game${i+1}Score`).textContent = gameScores[i];
-        }
-    }
-    
-    function updateBattery() {
-        const percent = (energy / 130) * 100;
-        document.getElementById('batteryFill').style.width = percent + '%';
-    }
-    
-    // ========== نظام المستويات ==========
-    function checkLevelUp() {
-        const xpNeeded = level * 100;
-        if (xp >= xpNeeded) {
-            level++;
-            xp = 0;
-            localStorage.setItem('level', level);
-            localStorage.setItem('xp', xp);
-            showNotification(`🎉 تهانينا! وصلت للمستوى ${level}`);
-            updateUI();
-        }
-    }
-    
-    // ========== عجلة الحظ ==========
-    function createWheel() {
-        const wheel = document.getElementById('wheel');
-        const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
-        
-        for (let i = 0; i < 8; i++) {
-            const segment = document.createElement('div');
-            segment.className = 'wheel-number';
-            segment.style.transform = `translateX(-50%) rotate(${i * 45}deg)`;
-            segment.style.transformOrigin = 'center 140px';
-            segment.textContent = rewards[i];
-            wheel.appendChild(segment);
-        }
-    }
-    
-    function startSpin() {
-        if (spinsLeft <= 0) return;
-        
-        const wheel = document.getElementById('wheel');
-        const spinBtn = document.getElementById('spinBtn');
-        spinBtn.disabled = true;
-        
-        // خصم محاولة
-        spinsLeft--;
-        refCount = spinsLeft;
-        localStorage.setItem('refCount', refCount);
-        localStorage.setItem('spinsLeft', spinsLeft);
-        
-        // تدوير العجلة
-        const extraSpins = 5 + Math.floor(Math.random() * 3);
-        const totalDegrees = 1440 + (Math.floor(Math.random() * 8) * 45);
-        
-        wheel.style.transition = 'transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
-        wheel.style.transform = `rotate(${totalDegrees}deg)`;
-        
-        // حساب الجائزة بعد 4 ثواني
+
+    function spinWheel() {
+        let deg = Math.floor(2000 + Math.random() * 2000);
+        document.getElementById('wheel-canvas').style.transform = `rotate(${deg}deg)`;
         setTimeout(() => {
-            const normalizedDeg = totalDegrees % 360;
-            const segmentIndex = Math.floor((360 - normalizedDeg) / 45) % 8;
-            const rewards = [50, 20, 10, 5, 0, 100, 75, 80];
-            const reward = rewards[segmentIndex];
-            
-            if (reward > 0) {
-                score += reward;
-                localStorage.setItem('score', score);
-                showNotification(`🎉 ربحت ${reward} نقطة من العجلة!`);
-            } else {
-                showNotification('😢 لم تربح شيئاً هذه المرة، حاول مجدداً!');
-            }
-            
-            updateUI();
-            spinBtn.disabled = spinsLeft <= 0;
+            alert("مبروك! لقد ربحت نقاطاً إضافية");
+            score += 500;
+            updateScore();
         }, 4000);
     }
-    
-    // ========== ألعاب النقر ==========
-    function playGame(gameId) {
-        const index = gameId - 1;
-        gameScores[index] += Math.floor(Math.random() * 5) + 3;
-        localStorage.setItem('gameScores', JSON.stringify(gameScores));
-        updateUI();
-        
-        // تأثيرات اللعبة
-        const gameBtn = event.target;
-        gameBtn.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            gameBtn.style.transform = 'scale(1)';
-        }, 100);
-    }
-    
-    // ========== نظام الأصدقاء ==========
-    function copyRefLink() {
-        const link = "https://t.me/Bitco93_bot?start=ref_" + Math.random().toString(36).substr(2, 9);
-        navigator.clipboard.writeText(link).then(() => {
-            showNotification('✅ تم نسخ رابط الدعوة');
-        });
-    }
-    
-    // ========== نظام المهام ==========
+
     function loadTasks() {
-        const tasks = [
-            { id: 1, title: "اشترك في قناتنا", reward: 100, completed: false },
-            { id: 2, title: "زر الرابط 1", reward: 50, completed: false },
-            { id: 3, title: "زر الرابط 2", reward: 50, completed: false },
-            { id: 4, title: "العب 10 دقائق", reward: 200, completed: false },
-            { id: 5, title: "أحضر صديقاً", reward: 500, completed: false }
+        const container = document.getElementById('tasks-container');
+        const demoTasks = [
+            {t: 'اشتراك في قناة المطور', r: 5000},
+            {t: 'متابعة حساب تويتر', r: 2000},
+            {t: 'مشاهدة فيديو اليوتيوب', r: 10000}
         ];
-        
-        const container = document.getElementById('tasksList');
-        container.innerHTML = '';
-        
-        tasks.forEach(task => {
-            const isCompleted = completedTasks.includes(task.id);
-            const taskHTML = `
-                <div class="task-item">
-                    <div>
-                        <h3>${task.title}</h3>
-                        <p>${isCompleted ? '✅ مكتمل' : '⚪ غير مكتمل'}</p>
-                    </div>
-                    <div class="task-reward">+${task.reward}</div>
-                </div>
-            `;
-            container.innerHTML += taskHTML;
+        demoTasks.forEach(task => {
+            container.innerHTML += `<div class="task-card"><span>${task.t}</span><button onclick="doTask(this, ${task.r})">+${task.r}</button></div>`;
         });
     }
-    
-    function claimAllTasks() {
-        let totalReward = 0;
-        completedTasks.forEach(taskId => {
-            const task = [
-                { id: 1, reward: 100 },
-                { id: 2, reward: 50 },
-                { id: 3, reward: 50 },
-                { id: 4, reward: 200 },
-                { id: 5, reward: 500 }
-            ].find(t => t.id === taskId);
-            
-            if (task) {
-                totalReward += task.reward;
-            }
-        });
-        
-        if (totalReward > 0) {
-            score += totalReward;
-            localStorage.setItem('score', score);
-            showNotification(`🎉 استلمت ${totalReward} نقطة من المهام!`);
-            updateUI();
-        } else {
-            showNotification('⚠️ لا توجد مهام مكتملة لاستلامها');
-        }
-    }
-    
-    // ========== الإعدادات ==========
-    function changeLanguage(lang) {
-        language = lang;
-        localStorage.setItem('language', lang);
-        
-        // تحديث أزرار اللغة
-        document.querySelectorAll('.lang-btn').forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.textContent.includes(lang === 'ar' ? 'العربية' : 
-                                        lang === 'en' ? 'English' :
-                                        lang === 'fr' ? 'Français' :
-                                        lang === 'es' ? 'Español' : 'Türkçe')) {
-                btn.classList.add('active');
-            }
-        });
-        
-        showNotification(lang === 'ar' ? '✅ تم تغيير اللغة إلى العربية' :
-                        lang === 'en' ? '✅ Language changed to English' :
-                        lang === 'fr' ? '✅ Langue changée en Français' :
-                        lang === 'es' ? '✅ Idioma cambiado a Español' :
-                        '✅ Dil Türkçe olarak değiştirildi');
-    }
-    
-    function resetData() {
-        if (confirm('هل أنت متأكد من إعادة تعيين جميع البيانات؟ سيتم حذف جميع النقاط والمستويات.')) {
-            localStorage.clear();
-            location.reload();
-        }
-    }
-    
-    // ========== نظام التنقل ==========
-    function initNavigation() {
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const tabContents = document.querySelectorAll('.tab-content');
-        
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const tabId = this.getAttribute('data-tab');
-                
-                // إخفاء جميع الخانات
-                tabContents.forEach(tab => {
-                    tab.classList.remove('active');
-                });
-                
-                // إلغاء تفعيل جميع الأزرار
-                navButtons.forEach(navBtn => {
-                    navBtn.classList.remove('active');
-                });
-                
-                // إظهار الخانة المطلوبة
-                document.getElementById(tabId).classList.add('active');
-                this.classList.add('active');
-            });
-        });
-    }
-    
-    // ========== نظام التنبيهات ==========
-    function showNotification(message) {
-        const notification = document.getElementById('notification');
-        notification.textContent = message;
-        notification.classList.add('show');
-        
+
+    function doTask(btn, reward) {
+        btn.innerText = 'جاري التحقق...';
         setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
+            btn.parentElement.style.opacity = '0.5';
+            btn.innerText = 'مكتمل ✅';
+            score += reward;
+            updateScore();
+        }, 2000);
     }
-    
-    // ========== تأثيرات CSS ==========
-    const style = document.createElement('style');
-    style.textContent = `
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 30px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255,255,255,0.2);
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 22px;
-            width: 22px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
+</script>
+
+<style>
+    @keyframes tapAnim { to { transform: translateY(-100px); opacity: 0; } }
+    .btn { cursor: pointer; transition: 0.3s; }
+    .btn:active { transform: scale(0.9); }
+</style>
+
+</body>
+</html>
